@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>18.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{d8765908-390e-4f5f-914c-32b442cd3ca2}</ProjectGuid>
+    <RootNamespace>ComputerGraphicsProject</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp23</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)../../Include</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)../../Lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp23</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)../../Include</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)../../Lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp23</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)../../Include</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)../../Lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp23</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)../../Include</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)../../Lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\Src\Application.cpp" />
+    <ClCompile Include="..\..\..\Src\Clock.cpp" />
+    <ClCompile Include="..\..\..\Src\Components\Camera.cpp" />
+    <ClCompile Include="..\..\..\Src\Components\Cannonball.cpp" />
+    <ClCompile Include="..\..\..\Src\Components\Component.cpp" />
+    <ClCompile Include="..\..\..\Src\Components\Explosion.cpp" />
+    <ClCompile Include="..\..\..\Src\Components\Mesh.cpp" />
+    <ClCompile Include="..\..\..\Src\Components\PlayerShipControls.cpp" />
+    <ClCompile Include="..\..\..\Src\Components\PlayerTurretControls.cpp" />
+    <ClCompile Include="..\..\..\Src\Components\Radar.cpp" />
+    <ClCompile Include="..\..\..\Src\Components\Theme.cpp" />
+    <ClCompile Include="..\..\..\Src\Components\Trail.cpp" />
+    <ClCompile Include="..\..\..\Src\Components\TrailRenderer.cpp" />
+    <ClCompile Include="..\..\..\Src\Components\Transform.cpp" />
+    <ClCompile Include="..\..\..\Src\Components\Water.cpp" />
+    <ClCompile Include="..\..\..\Src\Events\EventQueue.cpp" />
+    <ClCompile Include="..\..\..\Src\Events\Explosion.cpp" />
+    <ClCompile Include="..\..\..\Src\Events\Fire.cpp" />
+    <ClCompile Include="..\..\..\Src\Events\RemoveGameObject.cpp" />
+    <ClCompile Include="..\..\..\Src\GameObject.cpp" />
+    <ClCompile Include="..\..\..\Src\Input.cpp" />
+    <ClCompile Include="..\..\..\Src\Main.cpp" />
+    <ClCompile Include="..\..\..\Src\Utils\Random.cpp" />
+    <ClCompile Include="..\..\..\Src\Utils\Time.cpp" />
+    <ClCompile Include="..\..\..\Src\Window.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\Include\Application.h" />
+    <ClInclude Include="..\..\..\Include\Clock.h" />
+    <ClInclude Include="..\..\..\Include\Components\AIShipControls.h" />
+    <ClInclude Include="..\..\..\Include\Components\AITurretControls.h" />
+    <ClInclude Include="..\..\..\Include\Components\Camera.h" />
+    <ClInclude Include="..\..\..\Include\Components\Cannonball.h" />
+    <ClInclude Include="..\..\..\Include\Components\Component.h" />
+    <ClInclude Include="..\..\..\Include\Components\Explosion.h" />
+    <ClInclude Include="..\..\..\Include\Components\Hitbox.h" />
+    <ClInclude Include="..\..\..\Include\Components\Mesh.h" />
+    <ClInclude Include="..\..\..\Include\Components\PlayerShipControls.h" />
+    <ClInclude Include="..\..\..\Include\Components\PlayerTurretControls.h" />
+    <ClInclude Include="..\..\..\Include\Components\Radar.h" />
+    <ClInclude Include="..\..\..\Include\Components\Theme.h" />
+    <ClInclude Include="..\..\..\Include\Components\Trail.h" />
+    <ClInclude Include="..\..\..\Include\Components\TrailRenderer.h" />
+    <ClInclude Include="..\..\..\Include\Components\Transform.h" />
+    <ClInclude Include="..\..\..\Include\Components\Water.h" />
+    <ClInclude Include="..\..\..\Include\Container\CyclicQueue.h" />
+    <ClInclude Include="..\..\..\Include\Events\Event.h" />
+    <ClInclude Include="..\..\..\Include\Events\EventQueue.h" />
+    <ClInclude Include="..\..\..\Include\Events\Explosion.h" />
+    <ClInclude Include="..\..\..\Include\Events\Fire.h" />
+    <ClInclude Include="..\..\..\Include\Events\RemoveGameObject.h" />
+    <ClInclude Include="..\..\..\Include\GameObject.h" />
+    <ClInclude Include="..\..\..\Include\Input.h" />
+    <ClInclude Include="..\..\..\Include\Models.h" />
+    <ClInclude Include="..\..\..\Include\Singleton.h" />
+    <ClInclude Include="..\..\..\Include\Utils\Color.h" />
+    <ClInclude Include="..\..\..\Include\Utils\Constants.h" />
+    <ClInclude Include="..\..\..\Include\Utils\GL.h" />
+    <ClInclude Include="..\..\..\Include\Utils\Math.h" />
+    <ClInclude Include="..\..\..\Include\Utils\Random.h" />
+    <ClInclude Include="..\..\..\Include\Utils\SpeedState.h" />
+    <ClInclude Include="..\..\..\Include\Utils\Time.h" />
+    <ClInclude Include="..\..\..\Include\Window.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <ObjectFileName>$(IntDir)a/a/a/%(RelativeDir)%(Filename)%(Extension).obj</ObjectFileName>
+    </ClCompile>
+  </ItemDefinitionGroup>
+</Project>

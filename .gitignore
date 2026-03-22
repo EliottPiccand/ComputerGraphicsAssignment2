@@ -1,0 +1,6 @@
+*.clang*
+Build/**/x64/
+Build/**/.vs/
+Build/CMake/
+Dev/
+Build/Cmake/
