@@ -92,32 +92,6 @@ Application::Application() : lastFpsUpdate(now())
 
 #pragma endregion player
 
-    // for (auto &&_ : std::views::iota(0, ENEMY_COUNT)) {
-    //     auto enemyShipNode = sceneRoot->addChild();
-    //     enemyShipNode->addComponent<component::Transform>(Args &&args...);
-    //     enemyShipNode->addComponent<component::Theme>(Args &&args...);
-    //     enemyShipNode->addComponent<component::MeshRenderer>(Args &&args...);
-    //     // enemyShipNode->addComponent<component::Hitbox>(Args &&args...);
-    //     // enemyShipNode->addComponent<component::AIShipControls>(Args &&args...);
-
-    //     auto enemyShipTurretNode = playerShipNode->addChild();
-    //     enemyShipTurretNode->addComponent<component::Transform>(Args &&args...);
-    //     enemyShipTurretNode->addComponent<component::MeshRenderer>(Args &&args...);
-    //     // enemyShipTurretNode->addComponent<component::AITurretControls>(Args &&args...);
-
-    //     auto enemyShipRadarNode = playerShipNode->addChild();
-    //     enemyShipRadarNode->addComponent<component::Transform>(Args &&args...);
-    //     enemyShipRadarNode->addComponent<component::MeshRenderer>(Args &&args...);
-    //     // enemyShipRadarNode->addComponent<component::Radar>(Args &&args...);
-    // }
-
-    // for (auto &&_ : std::views::iota(0, OBSTACLES_COUNT)) {
-    //     auto obstacleNode = sceneRoot->addChild();
-    //     obstacleNode->addComponent<component::Transform>(Args &&args...);
-    //     obstacleNode->addComponent<component::MeshRenderer>(Args &&args...);
-    //     obstacleNode->addComponent<component::Hitbox>(Args &&args...);
-    // }
-
 #pragma endregion world_children
 
 #pragma endregion world
