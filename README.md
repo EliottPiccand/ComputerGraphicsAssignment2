@@ -8,7 +8,7 @@ The game starts immediately on running the executable. The player can change the
 ## Building the game
 To build the game, you need to :
 - compile every `.cpp` file inside (recursively) `Src` and `Lib/Src`
-- set the include directory to `Includes` and `Lib/Includes`
+- set the include directory to `Include`, `Lib/Include` and `Lib/Include/tracy`
 - link against every lib inside `Lib/Lib`
 - enable C++23 features
 

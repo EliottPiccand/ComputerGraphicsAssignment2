@@ -1,14 +1,10 @@
 #pragma once
 
-// #define PROFILING_ENABLE
+#if defined(TRACY_ENABLE) && defined(_DEBUG)
 
-#if defined(PROFILING_ENABLE)
+#include <tracy/Tracy.hpp>
 
-#define TRACY_ENABLE
-
-// #include <tracy/Tracy.hpp>
-
-// #define ProfilingEndFrame FrameMark
+#define ProfilingEndFrame FrameMark
 
 #else
 

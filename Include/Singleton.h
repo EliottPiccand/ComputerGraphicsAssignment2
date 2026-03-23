@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "Components/Camera.h"
+#include "Components/Camera.h" // NOLINT
 #include "Components/Water.h"
 
 struct Singleton {

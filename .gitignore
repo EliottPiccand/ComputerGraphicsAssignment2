@@ -4,3 +4,4 @@ Build/**/.vs/
 Build/CMake/
 Dev/
 Build/Cmake/
+.vscode/
