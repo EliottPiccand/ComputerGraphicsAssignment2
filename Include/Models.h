@@ -1,14 +1,11 @@
 #pragma once
 
 #include <array>
-#include <concepts>
-#include <iterator>
-#include <ranges>
 
 #include "Components/Mesh.h"
 #include "Utils/Color.h"
 #include "Utils/Concepts.h"
-#include "Utils/GL.h"
+#include <Utils/GL.h>
 
 namespace draw
 {

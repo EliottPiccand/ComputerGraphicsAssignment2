@@ -4,7 +4,7 @@
 
 #include "Components/Component.h"
 #include "Components/Transform.h"
-#include "Utils/GL.h"
+#include <Utils/GL.h>
 
 namespace component
 {

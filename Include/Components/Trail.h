@@ -8,7 +8,7 @@
 #include "Components/Transform.h"
 #include "Container/CyclicQueue.h"
 #include "Utils/Color.h"
-#include "Utils/GL.h"
+#include <Utils/GL.h>
 
 namespace component
 {

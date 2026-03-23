@@ -1,6 +1,6 @@
 #include "Components/TrailRenderer.h"
 
-#include "Utils/GL.h"
+#include <Utils/GL.h>
 #include "Utils/Math.h"
 
 constexpr const float TRAIL_MAX_SIZE = 60.0f; // m

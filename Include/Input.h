@@ -2,7 +2,7 @@
 
 #include <unordered_map>
 
-#include "Utils/GL.h"
+#include <Utils/GL.h>
 #include "Window.h"
 
 class Input

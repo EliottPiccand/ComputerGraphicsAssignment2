@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Components/Component.h"
-#include "Utils/GL.h"
+#include <Utils/GL.h>
 
 namespace component
 {

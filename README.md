@@ -7,15 +7,15 @@ The game starts immediately on running the executable. The player can change the
 
 ## Building the game
 To build the game, you need to :
-- compile every `.cpp` file inside (recursively) `Src`
-- set the include directory to `Includes`
-- link against every lib inside `Lib`
+- compile every `.cpp` file inside (recursively) `Src` and `Lib/Src`
+- set the include directory to `Includes` and `Lib/Includes`
+- link against every lib inside `Lib/Lib`
 - enable C++23 features
 
 ### Using CMake
 Run those 2 commands into the project directory : 
 ```cmd
-cmake -S . -B ./Build/CMake -G Ninja -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_MAKE_PROGRAM=ninja -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+cmake -S . -B ./Build/CMake -G Ninja -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_MAKE_PROGRAM=ninja
 cmake --build ./Build/CMake
 ```
 

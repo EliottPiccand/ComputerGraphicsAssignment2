@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Utils/GL.h"
+#include <Utils/GL.h>
 
 template <typename T> [[nodiscard]] T lerp(const T &start, const T &end, float t)
 {

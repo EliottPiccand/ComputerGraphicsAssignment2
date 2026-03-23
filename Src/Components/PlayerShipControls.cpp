@@ -5,7 +5,7 @@
 #include "GameObject.h"
 #include "Input.h"
 #include "Utils/Constants.h"
-#include "Utils/GL.h"
+#include <Utils/GL.h>
 
 using namespace component;
 

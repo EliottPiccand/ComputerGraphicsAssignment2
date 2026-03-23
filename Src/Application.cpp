@@ -29,7 +29,8 @@
 #include "Singleton.h"
 #include "Utils/Color.h"
 #include "Utils/Constants.h"
-#include "Utils/GL.h"
+#include <Utils/GL.h>
+#include "Utils/Profiling.h"
 #include "Utils/Random.h"
 
 constexpr const glm::vec2 SHIP_SCALE = {50.0f, 50.0f};
@@ -188,6 +189,8 @@ void Application::run()
         render();
 
         window->endFrame();
+
+        ProfilingEndFrame;
     }
 }
 

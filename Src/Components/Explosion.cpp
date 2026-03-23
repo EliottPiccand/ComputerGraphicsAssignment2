@@ -4,7 +4,7 @@
 #include "Events/RemoveGameObject.h"
 #include "GameObject.h"
 #include "Models.h"
-#include "Utils/GL.h"
+#include <Utils/GL.h>
 #include "Utils/Random.h"
 
 constexpr const float MAX_RADIUS = 100.0f;
