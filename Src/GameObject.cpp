@@ -2,7 +2,7 @@
 
 #include <cassert>
 
-#include <Utils/GL.h>
+#include <GL/glew.h>
 
 GameObject::GameObject() : id(nextId)
 {

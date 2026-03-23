@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <ranges>
 
+#include <GL/glew.h>
+
 #include "Utils/Color.h"
 
 constexpr float WATER_WAVES_SPEED = 100.0f; // m/s

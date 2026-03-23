@@ -1,7 +1,8 @@
 #pragma once
 
+#include <glm/glm.hpp>
+
 #include "Events/Event.h"
-#include <Utils/GL.h>
 
 namespace event
 {

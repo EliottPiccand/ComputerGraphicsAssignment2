@@ -1,5 +1,8 @@
 #include "Models.h"
 
+#include <GL/glew.h>
+#include <glm/gtx/rotate_vector.hpp>
+
 void draw::dashedArrow(const glm::vec2 &start, const glm::vec2 &end, const Color &color, float width, float tipSize)
 {
     constexpr const glm::vec2 ARROW_RATIO = {1.0f, 2.0f};

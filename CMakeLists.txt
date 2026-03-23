@@ -22,6 +22,11 @@ file(GLOB LIBS ${CMAKE_CURRENT_SOURCE_DIR}/Lib/*.lib)
 target_link_libraries(${EXECUTABLE_NAME} PRIVATE ${LIBS})
 target_link_libraries(${EXECUTABLE_NAME} PRIVATE OpenGL32)
 
+target_compile_definitions(${EXECUTABLE_NAME}
+  PUBLIC
+    GLM_ENABLE_EXPERIMENTAL
+)
+
 file(MAKE_DIRECTORY ${BUILD_DIR})
 set_target_properties(${EXECUTABLE_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${BUILD_DIR})
 

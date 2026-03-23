@@ -3,6 +3,9 @@
 #include <cassert>
 #include <chrono>
 
+#include <glm/gtx/rotate_vector.hpp>
+#include <glm/gtx/vector_angle.hpp>
+
 #include "GameObject.h"
 #if defined(_DEBUG) && defined(DISPLAY_AI_MOVEMENT_TARGETS)
 #include "Models.h"

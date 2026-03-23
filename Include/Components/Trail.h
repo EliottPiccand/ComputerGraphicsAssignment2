@@ -4,11 +4,12 @@
 #include <memory>
 #include <optional>
 
+#include <glm/glm.hpp>
+
 #include "Components/Component.h"
 #include "Components/Transform.h"
 #include "Container/CyclicQueue.h"
 #include "Utils/Color.h"
-#include <Utils/GL.h>
 
 namespace component
 {

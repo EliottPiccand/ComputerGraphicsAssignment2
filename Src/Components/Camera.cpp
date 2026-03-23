@@ -2,6 +2,9 @@
 
 #include <chrono>
 
+#include <GL/glew.h>
+#include <glm/gtx/rotate_vector.hpp>
+
 #include "Utils/Constants.h"
 #include "Utils/Random.h"
 

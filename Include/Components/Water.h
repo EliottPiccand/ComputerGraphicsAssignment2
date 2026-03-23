@@ -5,9 +5,10 @@
 #include <memory>
 #include <tuple>
 
+#include <glm/glm.hpp>
+
 #include "Components/Component.h"
 #include "Utils/Constants.h"
-#include <Utils/GL.h>
 
 namespace component
 {

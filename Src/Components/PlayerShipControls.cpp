@@ -2,10 +2,13 @@
 
 #include <cassert>
 
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+#include <glm/gtx/rotate_vector.hpp>
+
 #include "GameObject.h"
 #include "Input.h"
 #include "Utils/Constants.h"
-#include <Utils/GL.h>
 
 using namespace component;
 

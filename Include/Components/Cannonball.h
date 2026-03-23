@@ -2,9 +2,10 @@
 
 #include <memory>
 
+#include <glm/glm.hpp>
+
 #include "Components/Component.h"
 #include "Components/Transform.h"
-#include <Utils/GL.h>
 
 namespace component
 {

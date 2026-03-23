@@ -2,6 +2,9 @@
 
 #include <numbers>
 
+#include <GL/glew.h>
+#include <glm/gtx/matrix_transform_2d.hpp>
+
 #include "GameObject.h"
 
 using namespace component;

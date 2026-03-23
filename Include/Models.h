@@ -2,10 +2,11 @@
 
 #include <array>
 
+#include <GL/glew.h>
+
 #include "Components/Mesh.h"
 #include "Utils/Color.h"
 #include "Utils/Concepts.h"
-#include <Utils/GL.h>
 
 namespace draw
 {

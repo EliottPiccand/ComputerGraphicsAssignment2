@@ -1,7 +1,8 @@
 #pragma once
 
+#include <glm/glm.hpp>
+
 #include "Components/Component.h"
-#include <Utils/GL.h>
 
 namespace component
 {

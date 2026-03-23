@@ -29,7 +29,6 @@
 #include "Singleton.h"
 #include "Utils/Color.h"
 #include "Utils/Constants.h"
-#include <Utils/GL.h>
 #include "Utils/Profiling.h"
 #include "Utils/Random.h"
 
