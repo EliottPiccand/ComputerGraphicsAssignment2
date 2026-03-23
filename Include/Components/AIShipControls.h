@@ -11,7 +11,7 @@
 namespace component
 {
 
-// #define DISPLAY_AI_TARGETS
+// #define DISPLAY_AI_MOVEMENT_TARGETS
 
 class AIShipControls : public Component
 {
@@ -30,7 +30,7 @@ class AIShipControls : public Component
     void initialize() override;
     void update(float deltaTime) override;
 
-#if defined(_DEBUG) && defined(DISPLAY_AI_TARGETS)
+#if defined(_DEBUG) && defined(DISPLAY_AI_MOVEMENT_TARGETS)
     bool render() const override;
 #endif
 };

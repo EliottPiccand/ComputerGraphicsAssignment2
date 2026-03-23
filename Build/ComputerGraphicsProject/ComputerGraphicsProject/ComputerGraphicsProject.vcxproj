@@ -158,6 +158,7 @@
     <ClCompile Include="..\..\..\Src\Application.cpp" />
     <ClCompile Include="..\..\..\Src\Clock.cpp" />
     <ClCompile Include="..\..\..\Src\Components\AIShipControls.cpp" />
+    <ClCompile Include="..\..\..\Src\Components\AITurretControls.cpp" />
     <ClCompile Include="..\..\..\Src\Components\Camera.cpp" />
     <ClCompile Include="..\..\..\Src\Components\Cannonball.cpp" />
     <ClCompile Include="..\..\..\Src\Components\Component.cpp" />

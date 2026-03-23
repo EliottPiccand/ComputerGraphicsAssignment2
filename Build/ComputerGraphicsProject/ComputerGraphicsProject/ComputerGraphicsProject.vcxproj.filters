@@ -117,6 +117,9 @@
     <ClCompile Include="..\..\..\Src\Components\AIShipControls.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\Src\Components\AITurretControls.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\Include\Application.h">

@@ -134,7 +134,7 @@ Application::Application() : lastFpsUpdate(now())
 
         auto enemyShipTurretNode = enemyShipNode->addChild();
         enemyShipTurretNode->addComponent<component::Transform>(glm::vec2{0.0f, -0.4f}, 0.0f);
-        // enemyShipTurretNode->addComponent<component::AITurretControls>();
+        enemyShipTurretNode->addComponent<component::AITurretControls>();
         enemyShipTurretNode->addComponent<component::Mesh>(draw::polygon(SHIP_TURRET_VERTICES));
 
 #pragma endregion enemy_turret

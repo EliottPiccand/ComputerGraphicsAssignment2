@@ -4,7 +4,7 @@
 #include <chrono>
 
 #include "GameObject.h"
-#if defined(_DEBUG) && defined(DISPLAY_AI_TARGETS)
+#if defined(_DEBUG) && defined(DISPLAY_AI_MOVEMENT_TARGETS)
 #include "Models.h"
 #endif
 #include "Utils/Constants.h"
@@ -110,7 +110,7 @@ void AIShipControls::update(float deltaTime)
     }
 }
 
-#if defined(_DEBUG) && defined(DISPLAY_AI_TARGETS)
+#if defined(_DEBUG) && defined(DISPLAY_AI_MOVEMENT_TARGETS)
 
 bool AIShipControls::render() const
 {
