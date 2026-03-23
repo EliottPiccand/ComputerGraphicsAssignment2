@@ -55,7 +55,7 @@ Application::Application() : lastFpsUpdate(now())
     playerShipNode->addComponent<component::Transform>(glm::vec2{WORLD_WIDTH / 2.0f, WORLD_HEIGHT / 2.0f}, 0.0f,
                                                        SHIP_SCALE);
     playerShipNode->addComponent<component::Theme>(PLAYER_SHIP_FILL_COLOR, PLAYER_SHIP_OUTLINE_COLOR);
-    playerShipNode->addComponent<component::Mesh>(drawPolygon(SHIP_VERTICES));
+    playerShipNode->addComponent<component::Mesh>(draw::polygon(SHIP_VERTICES));
     // playerShipNode->addComponent<component::Hitbox>(Args &&args...);
     playerShipNode->addComponent<component::PlayerShipControls>();
     playerShipNode->addComponent<component::Trail>(trailRenderer, FOAM_COLOR, 0.2f * glm::length(SHIP_SCALE));
@@ -66,8 +66,8 @@ Application::Application() : lastFpsUpdate(now())
 
     auto playerShipTurretNode = playerShipNode->addChild();
     playerShipTurretNode->addComponent<component::Transform>(glm::vec2{0.0f, -0.4f}, 0.0f);
-    playerShipTurretNode->addComponent<component::Mesh>(drawPolygon(SHIP_TURRET_VERTICES));
     playerShipTurretNode->addComponent<component::PlayerTurretControls>();
+    playerShipTurretNode->addComponent<component::Mesh>(draw::polygon(SHIP_TURRET_VERTICES));
 
 #pragma endregion player_turret
 
@@ -84,7 +84,7 @@ Application::Application() : lastFpsUpdate(now())
             }
             glEnd();
 
-            drawPolygon(SHIP_RADAR_CENTER_VERTICES)(theme);
+            draw::polygon(SHIP_RADAR_CENTER_VERTICES)(theme);
         });
     playerShipRadarNode->addComponent<component::Radar>();
 
@@ -137,7 +137,7 @@ void Application::update(float deltaTime)
             auto cannonball = sceneRoot->addChild();
             cannonball->addComponent<component::Transform>(event->start, 0.0f, 30.0f * glm::vec2{1.0f, 1.0f});
             cannonball->addComponent<component::Theme>(CANNONBALL_FILL_COLOR, CANNONBALL_OUTLINE_COLOR);
-            cannonball->addComponent<component::Mesh>(drawPolygon(CANNONBALL_VERTICES));
+            cannonball->addComponent<component::Mesh>(draw::polygon(CANNONBALL_VERTICES));
             cannonball->addComponent<component::Cannonball>(event->target);
 
             cannonball->initialize();

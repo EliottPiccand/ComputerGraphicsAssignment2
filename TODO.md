@@ -5,7 +5,6 @@
 - replace obstacles
 - cannonballs smoke trail
 - cannonballs target line
-- aim assist line
 - enemy ships
 - enemy ships ai
 - dammage mechanic

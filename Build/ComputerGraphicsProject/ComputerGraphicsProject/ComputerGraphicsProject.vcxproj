@@ -177,6 +177,7 @@
     <ClCompile Include="..\..\..\Src\GameObject.cpp" />
     <ClCompile Include="..\..\..\Src\Input.cpp" />
     <ClCompile Include="..\..\..\Src\Main.cpp" />
+    <ClCompile Include="..\..\..\Src\Models.cpp" />
     <ClCompile Include="..\..\..\Src\Utils\Random.cpp" />
     <ClCompile Include="..\..\..\Src\Utils\Time.cpp" />
     <ClCompile Include="..\..\..\Src\Window.cpp" />

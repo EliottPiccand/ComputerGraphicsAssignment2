@@ -9,7 +9,9 @@
 #include "Events/Fire.h"
 #include "GameObject.h"
 #include "Input.h"
+#include "Models.h"
 #include "Singleton.h"
+#include "Utils/Color.h"
 #include "Utils/Constants.h"
 
 using namespace component;
@@ -60,4 +62,17 @@ void PlayerTurretControls::update(float deltaTime)
         }
         target = std::nullopt;
     }
+}
+
+bool PlayerTurretControls::render() const {
+    constexpr const GLfloat AIM_RAY_WIDTH = 3.0f; 
+
+    if (target.has_value() && aimingValidPosition) {
+        glm::mat3 resolvedTransform = transform->resolve();
+        glm::vec2 relativeTargetPosition = glm::inverse(resolvedTransform) * glm::vec3(target.value(), 1.0f);
+
+        draw::dashedArrow({0.0f, 0.0f}, relativeTargetPosition, AIM_RAY_COLOR, AIM_RAY_WIDTH, 0.15f);
+    }
+
+    return false;
 }

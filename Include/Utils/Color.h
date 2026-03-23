@@ -18,6 +18,8 @@ constexpr const Color RADAR_CONE_COLOR = rgba(255, 0, 0, 0.2);
 constexpr const Color PLAYER_SHIP_FILL_COLOR = rgba(123, 216, 121, 1);
 constexpr const Color PLAYER_SHIP_OUTLINE_COLOR = rgba(24, 128, 22, 1);
 
+constexpr const Color AIM_RAY_COLOR = rgba(220, 87, 87, 1);
+
 constexpr const Color CANNONBALL_FILL_COLOR = rgba(237, 208, 81, 1);
 constexpr const Color CANNONBALL_OUTLINE_COLOR = rgba(162, 138, 30, 1);
 

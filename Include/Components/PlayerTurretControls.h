@@ -19,6 +19,7 @@ class PlayerTurretControls : public Component
   public:
     void initialize() override;
     void update(float deltaTime) override;
+    bool render() const override;
 };
 
 } // namespace component
