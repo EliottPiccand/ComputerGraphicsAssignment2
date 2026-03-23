@@ -3,8 +3,9 @@
 #include "Utils/GL.h"
 #include "Utils/Math.h"
 
-constexpr const float TRAIL_MAX_SIZE = 100.0f; // m
-constexpr const float TRAIL_MIN_SIZE = 20.0f;  // m
+constexpr const float TRAIL_MAX_SIZE = 60.0f; // m
+constexpr const float TRAIL_MIN_SIZE = 10.0f;  // m
+constexpr const float TRAIL_STEP_BLEND_FACTOR = 4.0f;  // m
 
 using namespace component;
 
@@ -19,7 +20,7 @@ bool TrailRenderer::render() const
     {
         for (const auto &particle : trail->particles)
         {
-            glColor4f(trail->color.r, trail->color.g, trail->color.b, particle.intensity / 4.0f);
+            glColor4f(trail->color.r, trail->color.g, trail->color.b, particle.intensity / TRAIL_STEP_BLEND_FACTOR);
             glPointSize(lerp(TRAIL_MAX_SIZE, TRAIL_MIN_SIZE, particle.intensity));
             glBegin(GL_POINTS);
             glVertex2f(particle.position.x, particle.position.y);

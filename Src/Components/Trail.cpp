@@ -4,8 +4,8 @@
 #include "GameObject.h"
 #include "Singleton.h"
 
-constexpr const float TRAIL_PARTICLE_INTENTISY_DECAY = 0.2f;
-constexpr const float MIN_TRAIL_STEP = 10.0f; // m
+constexpr const float TRAIL_PARTICLE_INTENTISY_DECAY = 0.5f;
+constexpr const float MIN_TRAIL_STEP = 5.0f; // m
 
 using namespace component;
 

@@ -3,8 +3,12 @@
 #include <chrono>
 #include <cmath>
 #include <format>
+#include <numbers>
+#include <ranges>
 #include <string>
 
+#include "Components/AIShipControls.h"
+#include "Components/AITurretControls.h"
 #include "Components/Cannonball.h"
 #include "Components/Explosion.h"
 #include "Components/Mesh.h"
@@ -28,7 +32,17 @@
 #include "Utils/GL.h"
 #include "Utils/Random.h"
 
-constexpr const glm::vec2 SHIP_SCALE = {100.0f, 100.0f};
+constexpr const glm::vec2 SHIP_SCALE = {50.0f, 50.0f};
+constexpr const std::array SPAWN_LOCATIONS = {
+    glm::vec2{0.2f, 0.2f} * glm::vec2{WORLD_WIDTH, WORLD_HEIGHT},
+    glm::vec2{0.8f, 0.2f} * glm::vec2{WORLD_WIDTH, WORLD_HEIGHT},
+    glm::vec2{0.5f, 0.5f} * glm::vec2{WORLD_WIDTH, WORLD_HEIGHT},
+    glm::vec2{0.2f, 0.8f} * glm::vec2{WORLD_WIDTH, WORLD_HEIGHT},
+    glm::vec2{0.8f, 0.8f} * glm::vec2{WORLD_WIDTH, WORLD_HEIGHT},
+};
+constexpr const size_t ENEMY_COUNT = 2;
+
+static_assert(SPAWN_LOCATIONS.size() > ENEMY_COUNT, "Not enough spawn location to spawn the players and all enemies");
 
 Application::Application() : lastFpsUpdate(now())
 {
@@ -39,6 +53,8 @@ Application::Application() : lastFpsUpdate(now())
 
     Input::initialize(*window);
     Input::bindKey(Input::Action::ToggleFullScreen, GLFW_KEY_F11);
+
+    auto spawnLocations = SPAWN_LOCATIONS | std::ranges::to<std::vector>();
 
 #pragma region world
 
@@ -53,8 +69,8 @@ Application::Application() : lastFpsUpdate(now())
 #pragma region player
 
     auto playerShipNode = sceneRoot->addChild();
-    playerShipNode->addComponent<component::Transform>(glm::vec2{WORLD_WIDTH / 2.0f, WORLD_HEIGHT / 2.0f}, 0.0f,
-                                                       SHIP_SCALE);
+    playerShipNode->addComponent<component::Transform>(
+        Random::pop(spawnLocations), Random::random(0.0f, 2.0f * std::numbers::pi_v<float>), SHIP_SCALE);
     playerShipNode->addComponent<component::Theme>(PLAYER_SHIP_FILL_COLOR, PLAYER_SHIP_OUTLINE_COLOR);
     playerShipNode->addComponent<component::Mesh>(draw::polygon(SHIP_VERTICES));
     // playerShipNode->addComponent<component::Hitbox>(Args &&args...);
@@ -72,6 +88,8 @@ Application::Application() : lastFpsUpdate(now())
 
 #pragma endregion player_turret
 
+#pragma region player_radar
+
     auto playerShipRadarNode = playerShipNode->addChild();
     playerShipRadarNode->addComponent<component::Transform>(glm::vec2{0.0f, 0.6f}, 0.0f);
     playerShipRadarNode->addComponent<component::Mesh>([&](const std::shared_ptr<component::Theme> theme) {
@@ -88,9 +106,66 @@ Application::Application() : lastFpsUpdate(now())
     });
     playerShipRadarNode->addComponent<component::Radar>();
 
+#pragma endregion player_radar
+
 #pragma endregion player_children
 
 #pragma endregion player
+
+#pragma region enemies
+
+    for (const auto &&_ : std::views::iota(0uz, ENEMY_COUNT))
+    {
+
+#pragma region enemy
+
+        auto enemyShipNode = sceneRoot->addChild();
+        enemyShipNode->addComponent<component::Transform>(
+            Random::pop(spawnLocations), Random::random(0.0f, 2.0f * std::numbers::pi_v<float>), SHIP_SCALE);
+        enemyShipNode->addComponent<component::Theme>(ENEMY_SHIP_FILL_COLOR, ENEMY_SHIP_OUTLINE_COLOR);
+        enemyShipNode->addComponent<component::Mesh>(draw::polygon(SHIP_VERTICES));
+        // enemyShipNode->addComponent<component::Hitbox>(Args &&args...);
+        enemyShipNode->addComponent<component::AIShipControls>();
+        enemyShipNode->addComponent<component::Trail>(trailRenderer, FOAM_COLOR, 0.2f * glm::length(SHIP_SCALE));
+
+#pragma region enemy_children
+
+#pragma region enemy_turret
+
+        auto enemyShipTurretNode = enemyShipNode->addChild();
+        enemyShipTurretNode->addComponent<component::Transform>(glm::vec2{0.0f, -0.4f}, 0.0f);
+        // enemyShipTurretNode->addComponent<component::AITurretControls>();
+        enemyShipTurretNode->addComponent<component::Mesh>(draw::polygon(SHIP_TURRET_VERTICES));
+
+#pragma endregion enemy_turret
+
+#pragma region enemy_radar
+
+        auto enemyShipRadarNode = enemyShipNode->addChild();
+        enemyShipRadarNode->addComponent<component::Transform>(glm::vec2{0.0f, 0.6f}, 0.0f);
+        enemyShipRadarNode->addComponent<component::Mesh>([&](const std::shared_ptr<component::Theme> theme) {
+            glColor4f(RADAR_CONE_COLOR.r, RADAR_CONE_COLOR.g, RADAR_CONE_COLOR.b, RADAR_CONE_COLOR.a);
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+            glBegin(GL_POLYGON);
+            for (const auto &vertex : SHIP_RADAR_CONE_VERTICES)
+            {
+                glVertex2f(vertex.x, vertex.y);
+            }
+            glEnd();
+
+            draw::polygon(SHIP_RADAR_CENTER_VERTICES)(theme);
+        });
+        enemyShipRadarNode->addComponent<component::Radar>();
+
+#pragma endregion enemy_radar
+
+#pragma endregion enemy_children
+
+#pragma endregion enemy
+
+    }
+
+#pragma endregion enemies
 
 #pragma endregion world_children
 

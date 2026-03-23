@@ -7,6 +7,7 @@
 
 #include "Components/Mesh.h"
 #include "Utils/Color.h"
+#include "Utils/Concepts.h"
 #include "Utils/GL.h"
 
 namespace draw
@@ -19,11 +20,7 @@ constexpr const GLfloat OUTLINE_WIDTH = 5.0f;
 
 }
 
-template <typename T>
-concept IterableOfVec2 =
-    std::ranges::range<T> && std::same_as<std::iter_value_t<std::ranges::iterator_t<T>>, glm::vec2>;
-
-template <IterableOfVec2 T> constexpr component::Mesh::RenderCallback polygon(const T &vertices)
+template <RangeOf<glm::vec2> T> constexpr component::Mesh::RenderCallback polygon(const T &vertices)
 {
     return [&](const std::shared_ptr<component::Theme> theme) {
         const auto &color = theme->getColor();

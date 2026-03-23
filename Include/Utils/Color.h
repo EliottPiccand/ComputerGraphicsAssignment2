@@ -19,8 +19,11 @@ constexpr const Color FOAM_COLOR = rgba(255, 255, 255, 1);
 
 constexpr const Color RADAR_CONE_COLOR = rgba(255, 0, 0, 0.2);
 
-constexpr const Color PLAYER_SHIP_FILL_COLOR = rgba(123, 216, 121, 1);
-constexpr const Color PLAYER_SHIP_OUTLINE_COLOR = rgba(24, 128, 22, 1);
+constexpr const Color PLAYER_SHIP_FILL_COLOR = rgba(121, 211, 216, 1);
+constexpr const Color PLAYER_SHIP_OUTLINE_COLOR = rgba(22, 96, 128, 1);
+
+constexpr const Color ENEMY_SHIP_FILL_COLOR = rgba(123, 216, 121, 1);
+constexpr const Color ENEMY_SHIP_OUTLINE_COLOR = rgba(24, 128, 22, 1);
 
 constexpr const Color AIM_RAY_COLOR = rgba(220, 87, 87, 1);
 

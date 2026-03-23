@@ -7,7 +7,6 @@ namespace component
 
 class AITurretControls : public Component
 {
-    
 };
 
 } // namespace component

@@ -4,9 +4,8 @@
 
 #include "GameObject.h"
 #include "Input.h"
+#include "Utils/Constants.h"
 #include "Utils/GL.h"
-
-constexpr const float SHIP_SPEED = 100.0f; // m/s
 
 using namespace component;
 
@@ -59,11 +58,11 @@ void PlayerShipControls::update(float deltaTime)
 
     if (Input::getState(Input::Action::TurnLeft) == Input::State::JustPressed)
     {
-        transform->rotate(glm::radians(-15.0f));
+        transform->rotate(-SHIP_ROTATION_ANGLE);
     }
     if (Input::getState(Input::Action::TurnRight) == Input::State::JustPressed)
     {
-        transform->rotate(glm::radians(15.0f));
+        transform->rotate(SHIP_ROTATION_ANGLE);
     }
 
     // Move

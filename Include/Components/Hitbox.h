@@ -7,7 +7,6 @@ namespace component
 
 class Hitbox : public Component
 {
-    
 };
 
 } // namespace component

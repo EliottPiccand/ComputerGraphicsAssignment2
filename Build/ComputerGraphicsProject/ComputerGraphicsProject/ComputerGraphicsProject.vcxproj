@@ -157,6 +157,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\Src\Application.cpp" />
     <ClCompile Include="..\..\..\Src\Clock.cpp" />
+    <ClCompile Include="..\..\..\Src\Components\AIShipControls.cpp" />
     <ClCompile Include="..\..\..\Src\Components\Camera.cpp" />
     <ClCompile Include="..\..\..\Src\Components\Cannonball.cpp" />
     <ClCompile Include="..\..\..\Src\Components\Component.cpp" />
@@ -212,6 +213,7 @@
     <ClInclude Include="..\..\..\Include\Models.h" />
     <ClInclude Include="..\..\..\Include\Singleton.h" />
     <ClInclude Include="..\..\..\Include\Utils\Color.h" />
+    <ClInclude Include="..\..\..\Include\Utils\Concepts.h" />
     <ClInclude Include="..\..\..\Include\Utils\Constants.h" />
     <ClInclude Include="..\..\..\Include\Utils\GL.h" />
     <ClInclude Include="..\..\..\Include\Utils\Math.h" />

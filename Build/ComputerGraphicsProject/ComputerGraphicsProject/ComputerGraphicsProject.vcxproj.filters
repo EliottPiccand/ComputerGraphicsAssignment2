@@ -114,6 +114,9 @@
     <ClCompile Include="..\..\..\Src\Models.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\Src\Components\AIShipControls.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\Include\Application.h">
@@ -223,6 +226,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\Include\Components\Explosion.h">
       <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Include\Utils\Concepts.h">
+      <Filter>Header Files\Utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
