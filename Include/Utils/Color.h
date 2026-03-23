@@ -4,7 +4,11 @@
 
 using Color = glm::vec4;
 
-#define rgba(r, g, b, a) Color{r##.0f / 255.0f, g##.0f / 255.0f, b##.0f / 255.0f, a}
+#define rgba(r, g, b, a)                                                                                               \
+    Color                                                                                                              \
+    {                                                                                                                  \
+        r##.0f / 255.0f, g##.0f / 255.0f, b##.0f / 255.0f, a                                                           \
+    }
 
 #pragma region colors
 

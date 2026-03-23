@@ -3,8 +3,6 @@
 #include <numbers>
 
 #include "GameObject.h"
-#include "Utils/GL.h"
-#include "glm/ext/vector_float2.hpp"
 
 using namespace component;
 

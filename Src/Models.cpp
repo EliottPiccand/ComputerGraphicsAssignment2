@@ -1,6 +1,4 @@
 #include "Models.h"
-#include "Utils/GL.h"
-#include "glm/trigonometric.hpp"
 
 void draw::dashedArrow(const glm::vec2 &start, const glm::vec2 &end, const Color &color, float width, float tipSize)
 {
@@ -30,5 +28,4 @@ void draw::dashedArrow(const glm::vec2 &start, const glm::vec2 &end, const Color
         glVertex2f(end.x, end.y);
         glVertex2f(arrowEnd.x, arrowStart.y);
     glEnd();
-
 }

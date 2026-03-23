@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Events/Event.h"
-#include "GameObject.h"
 #include "Utils/GL.h"
 
 namespace event

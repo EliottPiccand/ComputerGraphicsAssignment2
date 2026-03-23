@@ -5,12 +5,12 @@
 #include "Utils/Constants.h"
 #include "Utils/Random.h"
 
-using namespace component;
-
 constexpr const Duration SHAKING_UPDATE_INTERVAL = std::chrono::milliseconds(20);
 constexpr const float SHAKING_INTENSITY = 10.0f; // m
 constexpr const float SHAKING_DECAY_FACTOR = 0.9f;
 constexpr const float SHAKING_SPREAD_ANGLE = 60.0f; // °
+
+using namespace component;
 
 #define LRBT                                                                                                           \
     baseLeft + shakingOffset.x, baseRight + shakingOffset.x, baseBottom + shakingOffset.y, baseTop + shakingOffset.y

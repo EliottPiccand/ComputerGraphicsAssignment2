@@ -2,9 +2,11 @@
 
 #include <cassert>
 
-#include "Components/Transform.h"
 #include "GameObject.h"
 #include "Input.h"
+#include "Utils/GL.h"
+
+constexpr const float SHIP_SPEED = 100.0f; // m/s
 
 using namespace component;
 
@@ -15,16 +17,14 @@ void PlayerShipControls::initialize()
     Input::bindKey(Input::Action::SpeedDown, GLFW_KEY_S);
     Input::bindKey(Input::Action::TurnRight, GLFW_KEY_D);
 
-    const auto transformOpt = owner->findFirstComponentInParents<Transform>();
-    assert(transformOpt.has_value() && "No transform found! component::PlayerShipControls needs its node or one of its "
-                                       "parents has a component::Transform");
-    transform = transformOpt.value();
+    const auto transformOption = owner->findFirstComponentInParents<Transform>();
+    assert(transformOption.has_value() && "No transform found! component::PlayerShipControls needs its node or one of "
+                                          "its parents has a component::Transform");
+    transform = transformOption.value();
 }
 
 void PlayerShipControls::update(float deltaTime)
 {
-    constexpr const float SHIP_SPEED = 100.0f; // m/s
-
     if (Input::getState(Input::Action::SpeedUp) == Input::State::JustPressed)
     {
         switch (speedState)

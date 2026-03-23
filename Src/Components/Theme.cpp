@@ -1,6 +1,6 @@
 #include "Components/Theme.h"
 
-using component::Theme;
+using namespace component;
 
 Theme::Theme(const Color &color, const Color &outlineColor) : color(color), outlineColor(outlineColor)
 {

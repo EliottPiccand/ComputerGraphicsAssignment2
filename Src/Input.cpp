@@ -14,7 +14,7 @@ void Input::bindKey(Action action, unsigned int key)
 {
     key += 1;
     assert((key & MASK) == key && "`key` must be a `GLFW_KEY_...` macro");
- 
+
     binds[action] = key;
     states[action] = State::HeldReleased;
 }

@@ -20,7 +20,7 @@ class Transform : public Component
     float getRotation() const;
 
     void setScale(float scale);
-    
+
     void rotate(float by);
     void translate(const glm::vec2 &by);
 

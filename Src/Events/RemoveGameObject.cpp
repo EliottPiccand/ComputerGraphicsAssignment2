@@ -2,7 +2,6 @@
 
 using namespace event;
 
-RemoveGameObject::RemoveGameObject(const GameObjectId id)
-    : id(id)
+RemoveGameObject::RemoveGameObject(const GameObjectId id) : id(id)
 {
 }

@@ -11,13 +11,13 @@ static void glfwErrorCallback(int code, const char *description)
     throw std::runtime_error(message);
 }
 
-Window::Window(PFN_ResizeCallback resizeCallback)
-    : isFullScreen(false)
+Window::Window(PFN_ResizeCallback resizeCallback) : isFullScreen(false)
 {
     glfwSetErrorCallback(glfwErrorCallback);
     glfwInit();
 
-    handle = glfwCreateWindow(static_cast<int>(DEFAULT_WIDTH), static_cast<int>(DEFAULT_HEIGHT), DEFAULT_TITLE, nullptr, nullptr);
+    handle = glfwCreateWindow(static_cast<int>(DEFAULT_WIDTH), static_cast<int>(DEFAULT_HEIGHT), DEFAULT_TITLE, nullptr,
+                              nullptr);
     glfwMakeContextCurrent(handle);
 
     user_data = std::make_unique<CallbackData>(resizeCallback);
@@ -96,6 +96,7 @@ void Window::toggleFullscreen()
     }
     else
     {
-        glfwSetWindowMonitor(handle, nullptr, nonFullscreenPositionX, nonFullscreenPositionY, nonFullscreenWidth, nonFullscreenHeight, GLFW_DONT_CARE);
+        glfwSetWindowMonitor(handle, nullptr, nonFullscreenPositionX, nonFullscreenPositionY, nonFullscreenWidth,
+                             nonFullscreenHeight, GLFW_DONT_CARE);
     }
 }

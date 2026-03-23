@@ -4,13 +4,13 @@
 #include "Events/RemoveGameObject.h"
 #include "GameObject.h"
 #include "Models.h"
-#include "Utils/Color.h"
 #include "Utils/GL.h"
 #include "Utils/Random.h"
 
-using namespace component;
-
 constexpr const float MAX_RADIUS = 100.0f;
+constexpr const float EXPANSION_RATE = 300.0f; // m/s
+
+using namespace component;
 
 Explosion::Explosion(float radius)
     : radius(radius), rotations([] {
@@ -28,17 +28,15 @@ Explosion::Explosion(float radius)
 
 void Explosion::initialize()
 {
-    const auto transformOpt = owner->findFirstComponentInParents<Transform>();
-    assert(transformOpt.has_value() &&
+    const auto transformOption = owner->findFirstComponentInParents<Transform>();
+    assert(transformOption.has_value() &&
            "No theme found! component::Explosion needs its node or one of its parents has a component::Transform");
 
-    transform = transformOpt.value();
+    transform = transformOption.value();
 }
 
 void Explosion::update(float deltaTime)
 {
-    constexpr const float EXPANSION_RATE = 300.0f; // m/s
-
     radius += EXPANSION_RATE * deltaTime;
     transform->setScale(radius);
 

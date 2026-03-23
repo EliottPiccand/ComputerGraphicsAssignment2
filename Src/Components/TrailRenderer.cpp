@@ -3,6 +3,9 @@
 #include "Utils/GL.h"
 #include "Utils/Math.h"
 
+constexpr const float TRAIL_MAX_SIZE = 100.0f; // m
+constexpr const float TRAIL_MIN_SIZE = 20.0f;  // m
+
 using namespace component;
 
 void TrailRenderer::registerTrail(std::shared_ptr<Trail> trail)
@@ -12,10 +15,6 @@ void TrailRenderer::registerTrail(std::shared_ptr<Trail> trail)
 
 bool TrailRenderer::render() const
 {
-
-    constexpr const float TRAIL_MAX_SIZE = 100.0f; // m
-    constexpr const float TRAIL_MIN_SIZE = 20.0f; // m
-
     for (const auto &trail : trails)
     {
         for (const auto &particle : trail->particles)

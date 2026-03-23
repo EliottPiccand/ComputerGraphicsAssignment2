@@ -5,7 +5,6 @@
 
 #include "Components/Component.h"
 #include "Components/Theme.h"
-#include "Mesh.h"
 
 namespace component
 {

@@ -1,8 +1,6 @@
 #include "GameObject.h"
 
 #include <cassert>
-#include <memory>
-#include <optional>
 
 #include "Utils/GL.h"
 

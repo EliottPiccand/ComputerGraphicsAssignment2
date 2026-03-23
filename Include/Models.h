@@ -2,9 +2,8 @@
 
 #include <array>
 #include <concepts>
-#include <optional>
+#include <iterator>
 #include <ranges>
-#include <type_traits>
 
 #include "Components/Mesh.h"
 #include "Utils/Color.h"
@@ -13,14 +12,19 @@
 namespace draw
 {
 
+namespace
+{
+
+constexpr const GLfloat OUTLINE_WIDTH = 5.0f;
+
+}
+
 template <typename T>
 concept IterableOfVec2 =
     std::ranges::range<T> && std::same_as<std::iter_value_t<std::ranges::iterator_t<T>>, glm::vec2>;
 
 template <IterableOfVec2 T> constexpr component::Mesh::RenderCallback polygon(const T &vertices)
 {
-    constexpr const GLfloat OUTLINE_WIDTH = 5.0f;
-
     return [&](const std::shared_ptr<component::Theme> theme) {
         const auto &color = theme->getColor();
 
@@ -124,8 +128,21 @@ constexpr const std::array EXPLOSION_VERTICES = [] {
     constexpr const glm::vec2 V17{12.0f, 38.0f};
 
     auto vertices = std::array{
-        V1,  V2, V3,  V2,  V3, V4, V3,  V4, V5, V3,  V5, V6,  V3,  V6,  V7,  V5,  V6, V8,  V4,  V5,  V9,  V5,  V9,
-        V10, V9, V11, V12, V4, V9, V12, V2, V4, V13, V2, V13, V14, V13, V14, V15, V2, V14, V16, V14, V16, V17,
+         V1,  V2,  V3,
+         V2,  V3,  V4,
+         V3,  V4,  V5,
+         V3,  V5,  V6, 
+         V3,  V6,  V7,
+         V5,  V6,  V8,
+         V4,  V5,  V9,
+         V5,  V9, V10,
+         V9, V11, V12,
+         V4,  V9, V12,
+         V2,  V4, V13,
+         V2, V13, V14,
+        V13, V14, V15,
+         V2, V14, V16,
+        V14, V16, V17,
     };
 
     for (auto &vertex : vertices)

@@ -1,7 +1,9 @@
 #include "Application.h"
 
 #include <chrono>
-#include <memory>
+#include <cmath>
+#include <format>
+#include <string>
 
 #include "Components/Cannonball.h"
 #include "Components/Explosion.h"
@@ -25,7 +27,8 @@
 #include "Utils/Constants.h"
 #include "Utils/GL.h"
 #include "Utils/Random.h"
-#include "glm/geometric.hpp"
+
+constexpr const glm::vec2 SHIP_SCALE = {100.0f, 100.0f};
 
 Application::Application() : lastFpsUpdate(now())
 {
@@ -49,8 +52,6 @@ Application::Application() : lastFpsUpdate(now())
 
 #pragma region player
 
-    constexpr const glm::vec2 SHIP_SCALE = {100.0f, 100.0f};
-
     auto playerShipNode = sceneRoot->addChild();
     playerShipNode->addComponent<component::Transform>(glm::vec2{WORLD_WIDTH / 2.0f, WORLD_HEIGHT / 2.0f}, 0.0f,
                                                        SHIP_SCALE);
@@ -73,19 +74,18 @@ Application::Application() : lastFpsUpdate(now())
 
     auto playerShipRadarNode = playerShipNode->addChild();
     playerShipRadarNode->addComponent<component::Transform>(glm::vec2{0.0f, 0.6f}, 0.0f);
-    playerShipRadarNode->addComponent<component::Mesh>(
-        [&](const std::shared_ptr<component::Theme> theme) {
-            glColor4f(RADAR_CONE_COLOR.r, RADAR_CONE_COLOR.g, RADAR_CONE_COLOR.b, RADAR_CONE_COLOR.a);
-            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-            glBegin(GL_POLYGON);
-            for (const auto &vertex : SHIP_RADAR_CONE_VERTICES)
-            {
-                glVertex2f(vertex.x, vertex.y);
-            }
-            glEnd();
+    playerShipRadarNode->addComponent<component::Mesh>([&](const std::shared_ptr<component::Theme> theme) {
+        glColor4f(RADAR_CONE_COLOR.r, RADAR_CONE_COLOR.g, RADAR_CONE_COLOR.b, RADAR_CONE_COLOR.a);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        glBegin(GL_POLYGON);
+        for (const auto &vertex : SHIP_RADAR_CONE_VERTICES)
+        {
+            glVertex2f(vertex.x, vertex.y);
+        }
+        glEnd();
 
-            draw::polygon(SHIP_RADAR_CENTER_VERTICES)(theme);
-        });
+        draw::polygon(SHIP_RADAR_CENTER_VERTICES)(theme);
+    });
     playerShipRadarNode->addComponent<component::Radar>();
 
 #pragma endregion player_children

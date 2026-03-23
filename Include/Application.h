@@ -1,13 +1,10 @@
 #pragma once
 
-#include <concepts>
+#include <cstdint>
 #include <memory>
-#include <vector>
 
 #include "Clock.h"
-#include "Components/Camera.h"
 #include "GameObject.h"
-#include "Utils/GL.h"
 #include "Utils/Time.h"
 #include "Window.h"
 

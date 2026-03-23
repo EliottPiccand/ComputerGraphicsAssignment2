@@ -1,8 +1,9 @@
 #include "Components/Water.h"
-#include "Utils/Color.h"
 
 #include <algorithm>
 #include <ranges>
+
+#include "Utils/Color.h"
 
 constexpr float WATER_WAVES_SPEED = 100.0f; // m/s
 constexpr float WATER_WAVES_DAMPING = 1.2f;

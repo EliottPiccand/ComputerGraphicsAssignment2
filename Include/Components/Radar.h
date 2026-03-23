@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "Components/Component.h"
 #include "Components/Transform.h"
 

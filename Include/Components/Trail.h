@@ -8,6 +8,7 @@
 #include "Components/Transform.h"
 #include "Container/CyclicQueue.h"
 #include "Utils/Color.h"
+#include "Utils/GL.h"
 
 namespace component
 {
@@ -18,7 +19,6 @@ class Trail : public Component
 {
   private:
     static constexpr const size_t MAX_TRAIL_PARTICLES = 100;
-    friend TrailRenderer;
 
     std::shared_ptr<TrailRenderer> renderer;
 
@@ -32,6 +32,7 @@ class Trail : public Component
         float intensity;
     };
 
+    friend TrailRenderer;
     CyclicQueue<TrailParticle, MAX_TRAIL_PARTICLES> particles;
 
   public:
