@@ -23,6 +23,7 @@ void Mesh::initialize()
 bool Mesh::render() const
 {
     ProfileScope;
+    ProfileScopeGPU("Mesh::render");
 
     renderCallback(theme);
     return false;

@@ -5,14 +5,12 @@
 
 #include "Clock.h"
 #include "GameObject.h"
-#include "Utils/Time.h"
 #include "Window.h"
 
 class Application
 {
   private:
     Clock clock;
-    Instant lastFpsUpdate;
 
     std::unique_ptr<Window> window;
 

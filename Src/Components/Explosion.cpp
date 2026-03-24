@@ -53,6 +53,7 @@ void Explosion::update(float deltaTime)
 bool Explosion::render() const
 {
     ProfileScope;
+    ProfileScopeGPU("Explosion::render");
 
     float scale = 1.0f;
     for (const auto &[baseColor, rotation] : std::views::zip(COLORS, rotations))

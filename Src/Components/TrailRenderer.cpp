@@ -19,6 +19,7 @@ void TrailRenderer::registerTrail(std::shared_ptr<Trail> trail)
 bool TrailRenderer::render() const
 {
     ProfileScope;
+    ProfileScopeGPU("TrailRenderer::render");
 
     for (const auto &trail : trails)
     {

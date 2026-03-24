@@ -5,6 +5,9 @@
 #include <format>
 #include <stdexcept>
 
+#include "GLFW/glfw3.h"
+#include "Utils/Profiling.h"
+
 static void glfwErrorCallback(int code, const char *description)
 {
     const std::string message = std::format("GLFW error ({}) : {}", code, description);
@@ -19,6 +22,11 @@ Window::Window(PFN_ResizeCallback resizeCallback) : isFullScreen(false)
     handle = glfwCreateWindow(static_cast<int>(DEFAULT_WIDTH), static_cast<int>(DEFAULT_HEIGHT), DEFAULT_TITLE, nullptr,
                               nullptr);
     glfwMakeContextCurrent(handle);
+
+    glewInit();
+    SetGpuProfilingContext;
+
+    glfwSwapInterval(1); // vsync
 
     user_data = std::make_unique<CallbackData>(resizeCallback);
     glfwSetWindowUserPointer(handle, user_data.get());
@@ -41,7 +49,10 @@ bool Window::shouldClose() const
 
 void Window::endFrame() const
 {
+    ProfileScope;
+
     glfwSwapBuffers(handle);
+    CollectGpuProfilingEvents;
     glfwPollEvents();
 }
 

@@ -1,11 +1,7 @@
 #include "Application.h"
 
-#include <chrono>
-#include <cmath>
-#include <format>
 #include <numbers>
 #include <ranges>
-#include <string>
 
 #include "Components/AIShipControls.h"
 #include "Components/AITurretControls.h"
@@ -44,7 +40,7 @@ constexpr const size_t ENEMY_COUNT = 2;
 
 static_assert(SPAWN_LOCATIONS.size() > ENEMY_COUNT, "Not enough spawn location to spawn the players and all enemies");
 
-Application::Application() : lastFpsUpdate(now())
+Application::Application()
 {
     ProfileScope;
 
@@ -198,18 +194,6 @@ void Application::run()
 void Application::update(float deltaTime)
 {
     ProfileScope;
-
-    // Window title update
-    constexpr const Duration FPS_UPDATE_INTERVAL = std::chrono::seconds(2);
-
-    if (now() - lastFpsUpdate > FPS_UPDATE_INTERVAL)
-    {
-        lastFpsUpdate = now();
-
-        const float fps = clock.getFps();
-        const std::string title = std::format("{} | {} FPS", Window::DEFAULT_TITLE, std::roundf(fps));
-        window->setTitle(title);
-    }
 
     for (const auto &rawEvent : EventQueue::popAll())
     {

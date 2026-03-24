@@ -85,6 +85,7 @@ glm::mat3 Transform::resolve() const
 bool Transform::render() const
 {
     ProfileScope;
+    ProfileScopeGPU("Transform::render");
 
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();

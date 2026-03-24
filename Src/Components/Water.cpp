@@ -110,6 +110,7 @@ void Water::update(float deltaTime)
 bool Water::render() const
 {
     ProfileScope;
+    ProfileScopeGPU("Water::render");
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glColor4f(1.0f, 1.0f, 1.0f, 1.0f);

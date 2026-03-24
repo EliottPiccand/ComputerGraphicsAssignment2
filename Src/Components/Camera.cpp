@@ -97,6 +97,7 @@ void Camera::update(float deltaTime)
 bool Camera::render() const
 {
     ProfileScope;
+    ProfileScopeGPU("Camera::render");
 
     glMatrixMode(GL_PROJECTION);
 

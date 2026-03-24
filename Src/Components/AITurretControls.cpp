@@ -87,6 +87,7 @@ void AITurretControls::update(float deltaTime)
 bool AITurretControls::render() const
 {
     ProfileScope;
+    ProfileScopeGPU("AITurretControls::render");
 
     const glm::mat3 resolvedTransform = transform->resolve();
     const glm::vec2 relativeTargetPosition = glm::inverse(resolvedTransform) * glm::vec3(target, 1.0f);
