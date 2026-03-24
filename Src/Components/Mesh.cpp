@@ -3,6 +3,7 @@
 #include <cassert>
 
 #include "GameObject.h"
+#include "Utils/Profiling.h"
 
 using namespace component;
 
@@ -21,6 +22,8 @@ void Mesh::initialize()
 
 bool Mesh::render() const
 {
+    ProfileScope;
+
     renderCallback(theme);
     return false;
 }

@@ -20,6 +20,7 @@
 
 ## Final
 - Update report
+- Recreate VS solution
 
 ## If time
 - add loss water volume through waves

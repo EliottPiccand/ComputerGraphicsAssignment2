@@ -6,6 +6,7 @@
 #include <glm/gtx/rotate_vector.hpp>
 
 #include "Utils/Constants.h"
+#include "Utils/Profiling.h"
 #include "Utils/Random.h"
 
 constexpr const Duration SHAKING_UPDATE_INTERVAL = std::chrono::milliseconds(20);
@@ -81,6 +82,8 @@ glm::vec2 Camera::toWorldPosition(const glm::vec2 &position) const
 
 void Camera::update(float deltaTime)
 {
+    ProfileScope;
+
     if (now() - shakingLastUpdate > SHAKING_UPDATE_INTERVAL)
     {
         shakingOffset =
@@ -93,6 +96,8 @@ void Camera::update(float deltaTime)
 
 bool Camera::render() const
 {
+    ProfileScope;
+
     glMatrixMode(GL_PROJECTION);
 
     glLoadIdentity();

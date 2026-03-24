@@ -6,6 +6,7 @@
 #include <GL/glew.h>
 
 #include "Utils/Color.h"
+#include "Utils/Profiling.h"
 
 constexpr float WATER_WAVES_SPEED = 100.0f; // m/s
 constexpr float WATER_WAVES_DAMPING = 1.2f;
@@ -46,6 +47,8 @@ void Water::displaceWaterVolume(const glm::vec2 &position, float radius)
 
 void Water::update(float deltaTime)
 {
+    ProfileScope;
+
     auto &water = *this->water;
 
     if (deltaTime > 1.0f / 30.0f)
@@ -85,6 +88,8 @@ void Water::update(float deltaTime)
 
 bool Water::render() const
 {
+    ProfileScope;
+
     const auto &water = *this->water;
 
     for (auto &&[y, row] : water | std::views::enumerate)

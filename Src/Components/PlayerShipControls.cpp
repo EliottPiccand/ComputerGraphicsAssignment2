@@ -9,6 +9,7 @@
 #include "GameObject.h"
 #include "Input.h"
 #include "Utils/Constants.h"
+#include "Utils/Profiling.h"
 
 using namespace component;
 
@@ -27,6 +28,8 @@ void PlayerShipControls::initialize()
 
 void PlayerShipControls::update(float deltaTime)
 {
+    ProfileScope;
+
     if (Input::getState(Input::Action::SpeedUp) == Input::State::JustPressed)
     {
         switch (speedState)

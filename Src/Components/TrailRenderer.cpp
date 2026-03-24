@@ -3,6 +3,7 @@
 #include <GL/glew.h>
 
 #include "Utils/Math.h"
+#include "Utils/Profiling.h"
 
 constexpr const float TRAIL_MAX_SIZE = 60.0f; // m
 constexpr const float TRAIL_MIN_SIZE = 10.0f;  // m
@@ -17,6 +18,8 @@ void TrailRenderer::registerTrail(std::shared_ptr<Trail> trail)
 
 bool TrailRenderer::render() const
 {
+    ProfileScope;
+
     for (const auto &trail : trails)
     {
         for (const auto &particle : trail->particles)

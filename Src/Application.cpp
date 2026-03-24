@@ -46,6 +46,8 @@ static_assert(SPAWN_LOCATIONS.size() > ENEMY_COUNT, "Not enough spawn location t
 
 Application::Application() : lastFpsUpdate(now())
 {
+    ProfileScope;
+
     Random::initialize();
     window = std::make_unique<Window>([this](uint32_t width, uint32_t height) { onResize(width, height); });
     glEnable(GL_BLEND);
@@ -195,6 +197,8 @@ void Application::run()
 
 void Application::update(float deltaTime)
 {
+    ProfileScope;
+
     // Window title update
     constexpr const Duration FPS_UPDATE_INTERVAL = std::chrono::seconds(2);
 
@@ -260,6 +264,8 @@ void Application::update(float deltaTime)
 
 void Application::render() const
 {
+    ProfileScope;
+
     glClearColor(BACKGROUND_COLOR.r, BACKGROUND_COLOR.g, BACKGROUND_COLOR.b, BACKGROUND_COLOR.a);
     glClear(GL_COLOR_BUFFER_BIT);
 

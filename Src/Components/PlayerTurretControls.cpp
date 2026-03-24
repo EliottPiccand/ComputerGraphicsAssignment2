@@ -11,6 +11,7 @@
 #include "Singleton.h"
 #include "Utils/Color.h"
 #include "Utils/Constants.h"
+#include "Utils/Profiling.h"
 
 constexpr const GLfloat AIM_RAY_WIDTH = 3.0f;
 constexpr const GLfloat AIM_RAY_ARROW_TIP_SIZE = 0.15f;
@@ -30,6 +31,8 @@ void PlayerTurretControls::initialize()
 
 void PlayerTurretControls::update(float deltaTime)
 {
+    ProfileScope;
+
     const glm::mat3 resolvedTransform = transform->resolve();
     const glm::vec2 position = glm::vec2(resolvedTransform[2]);
 
@@ -68,6 +71,8 @@ void PlayerTurretControls::update(float deltaTime)
 
 bool PlayerTurretControls::render() const
 {
+    ProfileScope;
+
     if (target.has_value() && aimingValidPosition)
     {
         const glm::mat3 resolvedTransform = transform->resolve();

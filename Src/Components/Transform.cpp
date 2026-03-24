@@ -6,6 +6,7 @@
 #include <glm/gtx/matrix_transform_2d.hpp>
 
 #include "GameObject.h"
+#include "Utils/Profiling.h"
 
 using namespace component;
 
@@ -52,6 +53,8 @@ void Transform::translate(const glm::vec2 &by)
 
 glm::mat3 Transform::resolve() const
 {
+    ProfileScope;
+
     glm::mat3 transform;
     const auto ownerParentOpt = owner->getParent();
 
@@ -81,6 +84,8 @@ glm::mat3 Transform::resolve() const
 
 bool Transform::render() const
 {
+    ProfileScope;
+
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
 

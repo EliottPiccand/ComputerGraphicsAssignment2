@@ -1,6 +1,7 @@
 #include "Components/Radar.h"
 
 #include "GameObject.h"
+#include "Utils/Profiling.h"
 
 constexpr const float ROTATION_SPEED = glm::radians(90.0f); // rad/s
 
@@ -16,5 +17,7 @@ void Radar::initialize()
 
 void Radar::update(float deltaTime)
 {
+    ProfileScope;
+
     transform->rotate(ROTATION_SPEED * deltaTime);
 }

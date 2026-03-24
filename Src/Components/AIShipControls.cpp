@@ -7,7 +7,8 @@
 #include <glm/gtx/vector_angle.hpp>
 
 #include "GameObject.h"
-#if defined(_DEBUG) && defined(DISPLAY_AI_MOVEMENT_TARGETS)
+#include "Utils/Profiling.h"
+#if defined(OE_DEBUG) && defined(DISPLAY_AI_MOVEMENT_TARGETS)
 #include "Models.h"
 #endif
 #include "Utils/Constants.h"
@@ -80,6 +81,8 @@ void AIShipControls::initialize()
 
 void AIShipControls::update(float deltaTime)
 {
+    ProfileScope;
+
     const glm::vec2 position = transform->resolve()[2];
     const glm::vec2 direction = glm::rotate(glm::vec2(0.0f, -1.0f), transform->getRotation());
 
@@ -113,10 +116,12 @@ void AIShipControls::update(float deltaTime)
     }
 }
 
-#if defined(_DEBUG) && defined(DISPLAY_AI_MOVEMENT_TARGETS)
+#if defined(OE_DEBUG) && defined(DISPLAY_AI_MOVEMENT_TARGETS)
 
 bool AIShipControls::render() const
 {
+    ProfileScope;
+
     const glm::mat3 resolvedTransform = transform->resolve();
     const glm::vec2 relativeTargetPosition = glm::inverse(resolvedTransform) * glm::vec3(target, 1.0f);
 

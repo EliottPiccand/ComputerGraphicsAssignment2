@@ -31,7 +31,7 @@ class AIShipControls : public Component
     void initialize() override;
     void update(float deltaTime) override;
 
-#if defined(_DEBUG) && defined(DISPLAY_AI_MOVEMENT_TARGETS)
+#if defined(OE_DEBUG) && defined(DISPLAY_AI_MOVEMENT_TARGETS)
     bool render() const override;
 #endif
 };

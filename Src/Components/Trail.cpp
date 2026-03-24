@@ -3,6 +3,7 @@
 #include "Components/TrailRenderer.h"
 #include "GameObject.h"
 #include "Singleton.h"
+#include "Utils/Profiling.h"
 
 constexpr const float TRAIL_PARTICLE_INTENTISY_DECAY = 0.5f;
 constexpr const float MIN_TRAIL_STEP = 5.0f; // m
@@ -26,6 +27,8 @@ void Trail::initialize()
 
 void Trail::update(float deltaTime)
 {
+    ProfileScope;
+
     // 1) update intensity
     for (auto &particle : particles)
     {

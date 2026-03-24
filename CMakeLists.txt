@@ -1,15 +1,30 @@
 cmake_minimum_required(VERSION 3.20)
 
 set(PROJECT_NAME ComputerGraphics)
-set(EXECUTABLE_NAME main)
-set(BUILD_DIR "${CMAKE_SOURCE_DIR}/Build/CMake")
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 project(${PROJECT_NAME} LANGUAGES CXX VERSION 0.1.0)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+if(CMAKE_GENERATOR MATCHES "Visual Studio")
+    set(CMAKE_CONFIGURATION_TYPES Debug Release Profiling CACHE INTERNAL "")
+    set(CMAKE_CONFIGURATION_TYPES "${CMAKE_CONFIGURATION_TYPES}" CACHE INTERNAL "" FORCE)
+    foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
+        string(TOUPPER ${CONFIG} CONFIG_UPPER)
+        set_target_properties(${EXECUTABLE_NAME} PROPERTIES
+            RUNTIME_OUTPUT_DIRECTORY_${CONFIG_UPPER} "${CMAKE_SOURCE_DIR}/Build/${CONFIG}"
+        )
+    endforeach()
+else()
+    if(NOT CMAKE_BUILD_TYPE)
+        set(CMAKE_BUILD_TYPE Debug)
+    endif()
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/Build/${CMAKE_BUILD_TYPE})
+endif()
+
+set(EXECUTABLE_NAME main)
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/Src/*.cpp)
 add_executable(${EXECUTABLE_NAME} ${SOURCES})
 
@@ -27,9 +42,14 @@ target_compile_definitions(${EXECUTABLE_NAME}
     GLM_ENABLE_EXPERIMENTAL
 )
 
-file(MAKE_DIRECTORY ${BUILD_DIR})
-set_target_properties(${EXECUTABLE_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${BUILD_DIR})
+target_compile_definitions(${EXECUTABLE_NAME} PRIVATE
+  $<$<CONFIG:Debug>:OE_DEBUG>
+  $<$<CONFIG:Release>:OE_RELEASE>
+  $<$<CONFIG:Profiling>:OE_PROFILING>
+)
 
-set(TRACY_ENABLE OFF)
-add_subdirectory(Lib/tracy)
-target_link_libraries(${EXECUTABLE_NAME} PUBLIC Tracy::TracyClient)
+if(CMAKE_BUILD_TYPE STREQUAL "Profiling")
+    set(TRACY_ENABLE ON CACHE BOOL "Enable Tracy" FORCE)
+    add_subdirectory(Lib/tracy)
+    target_link_libraries(${EXECUTABLE_NAME} PRIVATE Tracy::TracyClient)
+endif()

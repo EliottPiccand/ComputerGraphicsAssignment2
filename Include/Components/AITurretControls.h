@@ -29,7 +29,7 @@ class AITurretControls : public Component
     void initialize() override;
     void update(float deltaTime) override;
 
-#if defined(_DEBUG) && defined(DISPLAY_AI_TARGETS_AIM_RAY)
+#if defined(OE_DEBUG) && defined(DISPLAY_AI_TARGETS_AIM_RAY)
     bool render() const override;
 #endif
 };

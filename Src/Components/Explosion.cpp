@@ -6,6 +6,7 @@
 #include "Events/RemoveGameObject.h"
 #include "GameObject.h"
 #include "Models.h"
+#include "Utils/Profiling.h"
 #include "Utils/Random.h"
 
 constexpr const float MAX_RADIUS = 100.0f;
@@ -38,6 +39,8 @@ void Explosion::initialize()
 
 void Explosion::update(float deltaTime)
 {
+    ProfileScope;
+
     radius += EXPANSION_RATE * deltaTime;
     transform->setScale(radius);
 
@@ -49,6 +52,8 @@ void Explosion::update(float deltaTime)
 
 bool Explosion::render() const
 {
+    ProfileScope;
+
     float scale = 1.0f;
     for (const auto &[baseColor, rotation] : std::views::zip(COLORS, rotations))
     {

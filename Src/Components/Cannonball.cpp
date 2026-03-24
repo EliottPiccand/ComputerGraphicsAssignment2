@@ -6,6 +6,7 @@
 #include "Events/Explosion.h"
 #include "Events/RemoveGameObject.h"
 #include "GameObject.h"
+#include "Utils/Profiling.h"
 
 constexpr const float EXPLOSION_RADIUS = 50.0f;  // m
 constexpr const float SPEED = 500.0f;            // m/s
@@ -28,6 +29,8 @@ void Cannonball::initialize()
 
 void Cannonball::update(float deltaTime)
 {
+    ProfileScope;
+
     const glm::mat3 resolvedTransform = transform->resolve();
     const glm::vec2 position = glm::vec2(resolvedTransform[2]);
 

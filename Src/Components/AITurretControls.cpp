@@ -7,7 +7,8 @@
 #include "Events/EventQueue.h"
 #include "Events/Fire.h"
 #include "GameObject.h"
-#if defined(_DEBUG) && defined(DISPLAY_AI_TARGETS_AIM_RAY)
+#include "Utils/Profiling.h"
+#if defined(OE_DEBUG) && defined(DISPLAY_AI_TARGETS_AIM_RAY)
 #include "Models.h"
 #include "Utils/Color.h"
 #endif
@@ -49,6 +50,8 @@ void AITurretControls::initialize()
 
 void AITurretControls::update(float deltaTime)
 {
+    ProfileScope;
+
     const glm::mat3 resolvedTransform = transform->resolve();
     const glm::vec2 position = glm::vec2(resolvedTransform[2]);
 
@@ -80,9 +83,11 @@ void AITurretControls::update(float deltaTime)
     }
 }
 
-#if defined(_DEBUG) && defined(DISPLAY_AI_TARGETS_AIM_RAY)
+#if defined(OE_DEBUG) && defined(DISPLAY_AI_TARGETS_AIM_RAY)
 bool AITurretControls::render() const
 {
+    ProfileScope;
+
     const glm::mat3 resolvedTransform = transform->resolve();
     const glm::vec2 relativeTargetPosition = glm::inverse(resolvedTransform) * glm::vec3(target, 1.0f);
 
