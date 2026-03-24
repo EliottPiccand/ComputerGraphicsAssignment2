@@ -1,11 +1,11 @@
 #include "Components/Water.h"
 
 #include <algorithm>
+#include <memory>
 #include <ranges>
 
-#include <GL/glew.h>
-
 #include "Utils/Color.h"
+#include "Utils/Constants.h"
 #include "Utils/Profiling.h"
 
 constexpr float WATER_WAVES_SPEED = 100.0f; // m/s
@@ -21,6 +21,18 @@ Water::Water()
     {
         row.fill(std::make_tuple(0.0f, 0.0f));
     }
+
+    textureData = std::make_unique<Texture>();
+    for (auto &c : *textureData)
+    {
+        c = 255;
+    }
+
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, GRID_WIDTH, GRID_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData->data());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
 
 void Water::displaceWaterVolume(const glm::vec2 &position, float radius)
@@ -82,33 +94,36 @@ void Water::update(float deltaTime)
             auto &[height, velocity] = data;
 
             height += velocity * deltaTime;
+
+            const glm::vec3 color = glm::mix(WATER_COLOR, FOAM_COLOR, height / (WORLD_SUBDIVISION_SIZE * 3.0f));
+            const size_t pixelIndex = (y * GRID_WIDTH + x) * CHANNELS;
+            (*textureData)[pixelIndex + 0] = static_cast<uint8_t>(color.r * 255.0f);
+            (*textureData)[pixelIndex + 1] = static_cast<uint8_t>(color.g * 255.0f);
+            (*textureData)[pixelIndex + 2] = static_cast<uint8_t>(color.b * 255.0f);
         }
     }
+
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, GRID_WIDTH, GRID_HEIGHT, GL_RGBA, GL_UNSIGNED_BYTE, textureData->data());
 }
 
 bool Water::render() const
 {
     ProfileScope;
 
-    const auto &water = *this->water;
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
-    for (auto &&[y, row] : water | std::views::enumerate)
-    {
-        for (auto &&[x, data] : row | std::views::enumerate)
-        {
-            auto &[height, _] = data;
+    glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, texture);
 
-            const auto color = glm::mix(WATER_COLOR, FOAM_COLOR, height / (WORLD_SUBDIVISION_SIZE * 3.0f));
-
-            const auto xFloat = static_cast<float>(x);
-            const auto yFloat = static_cast<float>(y);
-
-            glColor3f(color.r, color.g, color.b);
-            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-            glRectf(xFloat * WORLD_SUBDIVISION_SIZE, yFloat * WORLD_SUBDIVISION_SIZE,
-                    (xFloat + 1.0f) * WORLD_SUBDIVISION_SIZE, (yFloat + 1.0f) * WORLD_SUBDIVISION_SIZE);
-        }
-    }
+        glBegin(GL_QUADS);
+            glTexCoord2f(0.0f, 0.0f); glVertex2f(0.0f, 0.0f);
+            glTexCoord2f(1.0f, 0.0f); glVertex2f(WORLD_WIDTH, 0.0f);
+            glTexCoord2f(1.0f, 1.0f); glVertex2f(WORLD_WIDTH, WORLD_HEIGHT);
+            glTexCoord2f(0.0f, 1.0f); glVertex2f(0.0f, WORLD_HEIGHT);
+        glEnd();
+    glDisable(GL_TEXTURE_2D);
 
     return false;
 }
