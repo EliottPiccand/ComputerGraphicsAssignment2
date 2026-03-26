@@ -216,10 +216,10 @@ void Application::update(float deltaTime)
         window->toggleFullscreen();
     }
 
-    if (now() - gameStart > MAX_GAME_TIME)
-    {
-        EventQueue::post<event::GameEnd>(true);
-    }
+    // if (now() - gameStart > MAX_GAME_TIME)
+    // {
+    //     EventQueue::post<event::GameEnd>(true);
+    // }
 
     component::ui::Component::resetUIStates();
     sceneRoot->update(deltaTime);
