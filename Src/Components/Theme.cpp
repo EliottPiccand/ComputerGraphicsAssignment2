@@ -2,16 +2,34 @@
 
 using namespace component;
 
-Theme::Theme(const Color &color, const Color &outlineColor) : color(color), outlineColor(outlineColor)
+constexpr const Theme::Text DEFAULT_TEXT_THEME = Theme::Text{
+    .color = TEXT_COLOR,
+    .scale = 1.0f,
+};
+
+Theme::Theme(const Color &fillColor, const std::optional<Color> hoveredFillColor, const std::optional<Outline> &outline,
+             const std::optional<Text> &text)
+    : fillColor(fillColor), hoveredFillColor(hoveredFillColor), outline(outline),
+      text(text.value_or(DEFAULT_TEXT_THEME))
 {
 }
 
-const Color &Theme::getColor() const
+const Color &Theme::getFillColor() const
 {
-    return color;
+    return fillColor;
 }
 
-const Color &Theme::getOutlineColor() const
+const std::optional<Color> &Theme::getHoveredFillColor() const
 {
-    return outlineColor;
+    return hoveredFillColor;
+}
+
+const std::optional<Theme::Outline> &Theme::getOutline() const
+{
+    return outline;
+}
+
+const Theme::Text &Theme::getText() const
+{
+    return text;
 }

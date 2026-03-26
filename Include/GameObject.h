@@ -24,6 +24,9 @@ class GameObject : public std::enable_shared_from_this<GameObject>
     bool initialized = false;
 
   public:
+    bool visible = true;
+    bool active = true;
+
     GameObject();
 
     void initialize();
@@ -74,9 +77,9 @@ class GameObject : public std::enable_shared_from_this<GameObject>
     }
 
     template <std::derived_from<component::Component> T>
-    std::optional<std::shared_ptr<T>> findFirstComponentInParents() const
+    std::optional<std::shared_ptr<T>> findFirstComponentInParents(bool searchSelf = true) const
     {
-        auto nodeOption = std::optional(shared_from_this());
+        auto nodeOption = searchSelf ? std::optional(shared_from_this()) : parent;
         while (nodeOption.has_value())
         {
             const auto &node = nodeOption.value();
@@ -88,7 +91,7 @@ class GameObject : public std::enable_shared_from_this<GameObject>
             }
             else
             {
-                nodeOption = node->getParent();
+                nodeOption = node->parent;
             }
         }
 

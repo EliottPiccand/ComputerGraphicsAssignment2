@@ -45,4 +45,6 @@ class Window
 
     void setTitle(std::string title) const;
     void toggleFullscreen();
+
+    void close();
 };

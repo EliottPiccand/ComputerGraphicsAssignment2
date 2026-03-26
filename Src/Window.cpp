@@ -111,3 +111,8 @@ void Window::toggleFullscreen()
                              nonFullscreenHeight, GLFW_DONT_CARE);
     }
 }
+
+void Window::close()
+{
+    glfwSetWindowShouldClose(handle, GLFW_TRUE);
+}

@@ -13,21 +13,20 @@ namespace component
 class Camera : public Component
 {
   private:
-    float baseLeft;
-    float baseRight;
-    float baseBottom;
-    float baseTop;
-
     glm::vec2 shakingOffset = {0.0f, 0.0f};
     Instant shakingLastUpdate;
 
-    float screenWidth;
-    float screenHeight;
+    float viewportWidth;
+    float viewportHeight;
 
   public:
-    Camera(uint32_t screenWidth, uint32_t screenHeight);
+    glm::vec4 lrbt;
 
-    void onViewportResize(uint32_t width, uint32_t height);
+    Camera(const glm::vec4 &lrbt, uint32_t viewportWidth, uint32_t viewportHeight);
+
+    void onViewportResize(uint32_t viewportWidth, uint32_t viewportHeight);
+    static glm::vec4 getWorldLBRT(uint32_t viewportWidth, uint32_t viewportHeight);
+
     glm::vec2 toWorldPosition(const glm::vec2 &position) const;
     void shake();
 

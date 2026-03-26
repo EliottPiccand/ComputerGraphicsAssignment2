@@ -14,14 +14,12 @@ namespace draw
 namespace
 {
 
-constexpr const GLfloat OUTLINE_WIDTH = 5.0f;
-
 }
 
 template <RangeOf<glm::vec2> T> constexpr component::Mesh::RenderCallback polygon(const T &vertices)
 {
     return [&](const std::shared_ptr<component::Theme> theme) {
-        const auto &color = theme->getColor();
+        const auto &color = theme->getFillColor();
 
         glColor3f(color.r, color.g, color.b);
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -32,16 +30,18 @@ template <RangeOf<glm::vec2> T> constexpr component::Mesh::RenderCallback polygo
         }
         glEnd();
 
-        const auto &outlineColor = theme->getOutlineColor();
-        glColor3f(outlineColor.r, outlineColor.g, outlineColor.b);
-        glLineWidth(OUTLINE_WIDTH);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glBegin(GL_POLYGON);
-        for (const auto &vertex : vertices)
-        {
-            glVertex2f(vertex.x, vertex.y);
+        const auto &outline = theme->getOutline();
+        if (outline.has_value()) {
+            glColor3f(outline->color.r, outline->color.g, outline->color.b);
+            glLineWidth(outline->width);
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+            glBegin(GL_POLYGON);
+            for (const auto &vertex : vertices)
+            {
+                glVertex2f(vertex.x, vertex.y);
+            }
+            glEnd();
         }
-        glEnd();
     };
 }
 

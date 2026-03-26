@@ -1,5 +1,7 @@
 #include <cstdlib>
+#if !defined(OE_DEBUG)
 #include <exception>
+#endif
 #include <print>
 
 #include "Application.h"
@@ -44,16 +46,20 @@ int main()
 
     #endif
 
+    #if !defined(OE_DEBUG)
     try
     {
+    #endif
         Application app;
         app.run();
+    #if !defined(OE_DEBUG)
     }
     catch (const std::exception &e)
     {
         std::println("an exception occured: {}", e.what());
         return EXIT_FAILURE;
     }
+    #endif
 
     return EXIT_SUCCESS;
 }

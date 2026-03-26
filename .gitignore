@@ -1,5 +1,8 @@
 .vscode/
+.venv/
+Assets/
 Build/
 Dev/
+Generated/
 *.clang*
 NOTES.md

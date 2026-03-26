@@ -48,6 +48,11 @@ std::optional<std::shared_ptr<GameObject>> GameObject::getGameObject(GameObjectI
 
 std::shared_ptr<GameObject> GameObject::detach()
 {
+    while (!children.empty())
+    {
+        children[0]->detach();
+    }
+
     if (parent.has_value())
     {
         auto &siblings = parent.value()->children;
@@ -67,6 +72,11 @@ std::shared_ptr<GameObject> GameObject::detach()
 
 void GameObject::initialize()
 {
+    if (initialized)
+    {
+        return;
+    }
+
     for (auto &component : components)
     {
         component->initialize();
@@ -82,6 +92,11 @@ void GameObject::initialize()
 
 void GameObject::update(float deltaTime)
 {
+    if (!active)
+    {
+        return;
+    }
+
     assert(initialized && "GameObject::update called while uninitialized");
 
     for (auto &child : children)
@@ -97,15 +112,20 @@ void GameObject::update(float deltaTime)
 
 void GameObject::render() const
 {
+    if (!visible)
+    {
+        return;
+    }
+
     assert(initialized && "GameObject::render called while uninitialized");
 
-    bool shouldPopMatrix = false;
+    size_t matricesToPop = 0;
 
     for (const auto &component : components)
     {
         if (component->render())
         {
-            shouldPopMatrix = true;
+            matricesToPop += 1;
         }
     }
 
@@ -114,8 +134,9 @@ void GameObject::render() const
         child->render();
     }
 
-    if (shouldPopMatrix)
+    while (matricesToPop > 0)
     {
         glPopMatrix();
+        matricesToPop -= 1;
     }
 }

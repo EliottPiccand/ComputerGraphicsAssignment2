@@ -17,6 +17,7 @@ class TrailRenderer : public Component
   public:
     void registerTrail(std::shared_ptr<Trail> trail);
 
+    void update(float deltaTime) override;
     bool render() const override;
 };
 

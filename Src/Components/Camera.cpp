@@ -16,53 +16,63 @@ constexpr const float SHAKING_SPREAD_ANGLE = 60.0f; // °
 
 using namespace component;
 
-#define LRBT                                                                                                           \
-    baseLeft + shakingOffset.x, baseRight + shakingOffset.x, baseBottom + shakingOffset.y, baseTop + shakingOffset.y
+#define LRBT lrbt.x + shakingOffset.x, lrbt.y + shakingOffset.x, lrbt.z + shakingOffset.y, lrbt.w + shakingOffset.y
 
-Camera::Camera(uint32_t screenWidth, uint32_t screenHeight) : shakingLastUpdate(now() - SHAKING_UPDATE_INTERVAL)
+Camera::Camera(const glm::vec4 &lrbt, uint32_t viewportWidth, uint32_t viewportHeight)
+    : shakingLastUpdate(now() - SHAKING_UPDATE_INTERVAL), lrbt(lrbt)
 {
-    onViewportResize(screenWidth, screenHeight);
+    onViewportResize(viewportWidth, viewportHeight);
 }
 
-void Camera::onViewportResize(uint32_t width, uint32_t height)
+void Camera::onViewportResize(uint32_t viewportWidth, uint32_t viewportHeight)
+{
+    glViewport(0, 0, static_cast<GLsizei>(viewportWidth), static_cast<GLsizei>(viewportHeight));
+
+    this->viewportWidth = static_cast<float>(viewportWidth);
+    this->viewportHeight = static_cast<float>(viewportHeight);
+}
+
+glm::vec4 Camera::getWorldLBRT(uint32_t width, uint32_t height)
 {
     constexpr const float WORLD_DISPLAY_MARGIN = 100.0f; // m
-
-    glViewport(0, 0, static_cast<GLsizei>(width), static_cast<GLsizei>(height));
 
     constexpr float VIRTUAL_WORLD_WIDTH = WORLD_WIDTH + 2.0f * WORLD_DISPLAY_MARGIN;
     constexpr float VIRTUAL_WORLD_HEIGHT = WORLD_HEIGHT + 2.0f * WORLD_DISPLAY_MARGIN;
 
     constexpr float WORLD_ASPECT_RATIO = VIRTUAL_WORLD_WIDTH / VIRTUAL_WORLD_HEIGHT;
 
-    screenWidth = static_cast<float>(width);
-    screenHeight = static_cast<float>(height);
-    const float aspectRatio = screenWidth / screenHeight;
+    float viewportWidth = static_cast<float>(width);
+    float viewportHeight = static_cast<float>(height);
+    const float aspectRatio = viewportWidth / viewportHeight;
+
+    glm::vec4 lrbt;
 
     if (aspectRatio > WORLD_ASPECT_RATIO)
     {
-        baseTop = -WORLD_DISPLAY_MARGIN;
-        baseBottom = VIRTUAL_WORLD_HEIGHT - WORLD_DISPLAY_MARGIN;
+        lrbt.w = -WORLD_DISPLAY_MARGIN;
+        lrbt.z = VIRTUAL_WORLD_HEIGHT - WORLD_DISPLAY_MARGIN;
 
-        const float world_display_width = VIRTUAL_WORLD_WIDTH * screenHeight / VIRTUAL_WORLD_HEIGHT;
-        const float gap_display_width = (screenWidth - world_display_width) / 2.0f;
-        const float gap_world_width = gap_display_width * VIRTUAL_WORLD_HEIGHT / screenHeight;
+        const float world_display_width = VIRTUAL_WORLD_WIDTH * viewportHeight / VIRTUAL_WORLD_HEIGHT;
+        const float gap_display_width = (viewportWidth - world_display_width) / 2.0f;
+        const float gap_world_width = gap_display_width * VIRTUAL_WORLD_HEIGHT / viewportHeight;
 
-        baseLeft = -gap_world_width - WORLD_DISPLAY_MARGIN;
-        baseRight = VIRTUAL_WORLD_WIDTH + gap_world_width - WORLD_DISPLAY_MARGIN;
+        lrbt.x = -gap_world_width - WORLD_DISPLAY_MARGIN;
+        lrbt.y = VIRTUAL_WORLD_WIDTH + gap_world_width - WORLD_DISPLAY_MARGIN;
     }
     else
     {
-        baseLeft = -WORLD_DISPLAY_MARGIN;
-        baseRight = VIRTUAL_WORLD_WIDTH - WORLD_DISPLAY_MARGIN;
+        lrbt.x = -WORLD_DISPLAY_MARGIN;
+        lrbt.y = VIRTUAL_WORLD_WIDTH - WORLD_DISPLAY_MARGIN;
 
-        const float world_display_height = VIRTUAL_WORLD_HEIGHT * screenWidth / VIRTUAL_WORLD_WIDTH;
-        const float gap_display_height = (screenHeight - world_display_height) / 2.0f;
-        const float gap_world_height = gap_display_height * VIRTUAL_WORLD_WIDTH / screenWidth;
+        const float world_display_height = VIRTUAL_WORLD_HEIGHT * viewportWidth / VIRTUAL_WORLD_WIDTH;
+        const float gap_display_height = (viewportHeight - world_display_height) / 2.0f;
+        const float gap_world_height = gap_display_height * VIRTUAL_WORLD_WIDTH / viewportWidth;
 
-        baseTop = -gap_world_height - WORLD_DISPLAY_MARGIN;
-        baseBottom = VIRTUAL_WORLD_HEIGHT + gap_world_height - WORLD_DISPLAY_MARGIN;
+        lrbt.w = -gap_world_height - WORLD_DISPLAY_MARGIN;
+        lrbt.z = VIRTUAL_WORLD_HEIGHT + gap_world_height - WORLD_DISPLAY_MARGIN;
     }
+
+    return lrbt;
 }
 
 void Camera::shake()
@@ -74,7 +84,7 @@ void Camera::shake()
 glm::vec2 Camera::toWorldPosition(const glm::vec2 &position) const
 {
     const glm::vec2 normalizedPosition =
-        glm::vec2(position.x, screenHeight - position.y) / glm::vec2(screenWidth, screenHeight) * 2.0f - 1.0f;
+        glm::vec2(position.x, viewportHeight - position.y) / glm::vec2(viewportWidth, viewportHeight) * 2.0f - 1.0f;
     const glm::vec4 worldPosition =
         glm::inverse(glm::ortho(LRBT)) * glm::vec4(normalizedPosition.x, normalizedPosition.y, 0.0, 1.0);
     return {worldPosition.x, worldPosition.y};

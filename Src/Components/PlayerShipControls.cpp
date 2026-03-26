@@ -6,6 +6,7 @@
 #include <GLFW/glfw3.h>
 #include <glm/gtx/rotate_vector.hpp>
 
+#include "Components/Transform.h"
 #include "GameObject.h"
 #include "Input.h"
 #include "Utils/Constants.h"

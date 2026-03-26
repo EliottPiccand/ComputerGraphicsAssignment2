@@ -35,4 +35,10 @@ constexpr const Color EXPLOSION_LAYER_0_COLOR = rgba(182, 45, 12, 1);
 constexpr const Color EXPLOSION_LAYER_1_COLOR = rgba(208, 98, 34, 1);
 constexpr const Color EXPLOSION_LAYER_2_COLOR = rgba(215, 164, 55, 1);
 
+constexpr const Color TRANSPARENT_COLOR = rgba(0, 0, 0, 0);
+constexpr const Color UI_FILL_COLOR = rgba(76, 77, 90, 0.75);
+constexpr const Color UI_HOVERED_COLOR = rgba(111, 112, 127, 0.75);
+constexpr const Color UI_OUTLINE_COLOR = rgba(57, 59, 89, 1);
+constexpr const Color TEXT_COLOR = rgba(255, 255, 255, 1);
+
 #pragma endregion colors

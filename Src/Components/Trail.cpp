@@ -5,7 +5,6 @@
 #include "Singleton.h"
 #include "Utils/Profiling.h"
 
-constexpr const float TRAIL_PARTICLE_INTENTISY_DECAY = 0.5f;
 constexpr const float MIN_TRAIL_STEP = 5.0f; // m
 
 using namespace component;
@@ -29,19 +28,6 @@ void Trail::update(float deltaTime)
 {
     ProfileScope;
 
-    // 1) update intensity
-    for (auto &particle : particles)
-    {
-        particle.intensity -= deltaTime * TRAIL_PARTICLE_INTENTISY_DECAY;
-    }
-
-    // 2) remove dead ones
-    while (particles.size() > 0 && particles.back().intensity <= 0.0f)
-    {
-        particles.popBack();
-    }
-
-    // 3) add new
     const auto position = glm::vec2(transform->resolve()[2]);
     const float distanceToPreviousTrailStep = (particles.size() > 0)
                                                   ? glm::length(position - particles.front().position)

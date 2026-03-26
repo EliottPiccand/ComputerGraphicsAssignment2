@@ -6,8 +6,7 @@
 - cannonballs smoke trail
 - cannonballs target line
 - dammage mechanic
-- end game menu
-
+- fix circular shared_ptr with some weakptr to avoid memory leaks
 
 ## Teacher Addons
 - flag
@@ -17,6 +16,7 @@
 ## Custom Addons
 - find some custom addons
     - powerups that allow the player to see cannonballs' target ?
+    - fireworks on win ?
 
 ## Final
 - Update report

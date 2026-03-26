@@ -1,10 +1,13 @@
 #include "Application.h"
 
+#include <chrono>
+#include <memory>
 #include <numbers>
 #include <ranges>
 
 #include "Components/AIShipControls.h"
 #include "Components/AITurretControls.h"
+#include "Components/Camera.h"
 #include "Components/Cannonball.h"
 #include "Components/Explosion.h"
 #include "Components/Mesh.h"
@@ -15,18 +18,28 @@
 #include "Components/Trail.h"
 #include "Components/TrailRenderer.h"
 #include "Components/Transform.h"
+#include "Components/UI/Button.h"
+#include "Components/UI/Component.h"
 #include "Components/Water.h"
 #include "Events/EventQueue.h"
 #include "Events/Explosion.h"
 #include "Events/Fire.h"
+#include "Events/GameEnd.h"
+#include "Events/Quit.h"
 #include "Events/RemoveGameObject.h"
+#include "Events/Restart.h"
+#include "GLFW/glfw3.h"
 #include "Input.h"
 #include "Models.h"
 #include "Singleton.h"
 #include "Utils/Color.h"
 #include "Utils/Constants.h"
+#include "Utils/Font/Font.h"
 #include "Utils/Profiling.h"
 #include "Utils/Random.h"
+#include "Window.h"
+
+constexpr const Duration MAX_GAME_TIME = std::chrono::seconds(3);
 
 constexpr const glm::vec2 SHIP_SCALE = {50.0f, 50.0f};
 constexpr const std::array SPAWN_LOCATIONS = {
@@ -51,29 +64,222 @@ Application::Application()
 
     Input::initialize(*window);
     Input::bindKey(Input::Action::ToggleFullScreen, GLFW_KEY_F11);
+    Input::bindMouseButton(Input::Action::UIClick, GLFW_MOUSE_BUTTON_1);
+
+    font::Font::initialize();
+
+    sceneRoot = std::make_shared<GameObject>();
+    worldContainer = sceneRoot->addChild();
+
+    restart();
+
+#pragma region ui
+
+    victoryMenu = sceneRoot->addChild();
+    victoryMenu->visible = false;
+    victoryMenu->active = false;
+    Singleton::uiCamera = victoryMenu->addComponent<component::Camera>(
+        glm::vec4{0.0f, component::ui::Component::UI_WIDTH, component::ui::Component::UI_HEIGHT, 0.0f},
+        Window::DEFAULT_WIDTH, Window::DEFAULT_HEIGHT);
+    victoryMenu->addComponent<component::Theme>(UI_FILL_COLOR, std::optional(UI_HOVERED_COLOR),
+                                                std::optional(component::Theme::Outline{
+                                                    .color = UI_OUTLINE_COLOR,
+                                                    .width = 3.0f,
+                                                }),
+                                                std::optional(component::Theme::Text{
+                                                    .color = TEXT_COLOR,
+                                                    .scale = 0.1f,
+                                                }));
+    auto victoryMenuComponent = victoryMenu->addComponent<component::ui::Component>();
+    victoryMenuComponent->setDirection(component::ui::Component::Direction::Vertical);
+    victoryMenuComponent->setPadding(glm::vec2{4.0f, 5.0f});
+    victoryMenuComponent->setAlign(component::ui::Component::Align::Center);
+    victoryMenuComponent->setAnchor(component::ui::Component::Anchor{
+        .vertical = component::ui::Component::Align::Center,
+        .horizontal = component::ui::Component::Align::Center,
+    });
+
+    auto victoryMenuTitle = victoryMenu->addChild();
+    victoryMenuTitleLabel = victoryMenuTitle->addComponent<component::ui::Label>("Victory Menu");
+
+    auto victoryMenuButtonContainer = victoryMenu->addChild();
+    victoryMenuButtonContainer->addComponent<component::ui::Component>()->setDirection(
+        component::ui::Component::Direction::Horizontal);
+
+    auto victoryMenuButtonRestart = victoryMenuButtonContainer->addChild();
+    auto btn1 =
+        victoryMenuButtonRestart->addComponent<component::ui::Button>([]() { EventQueue::post<event::Restart>(); });
+    btn1->setPadding({2.0f, 5.0f});
+    victoryMenuButtonRestart->addChild()->addComponent<component::ui::Label>("Restart");
+
+    auto victoryMenuButtonQuit = victoryMenuButtonContainer->addChild();
+    auto btn2 = victoryMenuButtonQuit->addComponent<component::ui::Button>([]() { EventQueue::post<event::Quit>(); });
+    btn2->setPadding({2.0f, 5.0f});
+    victoryMenuButtonQuit->addChild()->addComponent<component::ui::Label>("Quit");
+
+#pragma endregion ui
+
+    sceneRoot->initialize();
+}
+
+void Application::run()
+{
+    while (!window->shouldClose())
+    {
+        const float deltaTime = clock.tick();
+        if (deltaTime > 1.0f)
+        {
+            continue;
+        }
+
+        update(deltaTime);
+        render();
+
+        window->endFrame();
+
+        ProfilingEndFrame;
+    }
+}
+
+void Application::update(float deltaTime)
+{
+    ProfileScope;
+
+    for (const auto &rawEvent : EventQueue::popAll())
+    {
+        if (const auto event = dynamic_cast<event::Fire *>(rawEvent.get()))
+        {
+            auto cannonball = world->addChild();
+            cannonball->addComponent<component::Transform>(event->start, 0.0f, 30.0f * glm::vec2{1.0f, 1.0f});
+            cannonball->addComponent<component::Theme>(CANNONBALL_FILL_COLOR, CANNONBALL_OUTLINE_COLOR);
+            cannonball->addComponent<component::Mesh>(draw::polygon(CANNONBALL_VERTICES));
+            cannonball->addComponent<component::Cannonball>(event->target);
+
+            cannonball->initialize();
+
+            continue;
+        }
+
+        if (const auto event = dynamic_cast<event::RemoveGameObject *>(rawEvent.get()))
+        {
+            const auto gameObjectOption = sceneRoot->getGameObject(event->id);
+            if (gameObjectOption.has_value())
+            {
+                gameObjectOption.value()->detach();
+            }
+
+            continue;
+        }
+
+        if (const auto event = dynamic_cast<event::Explosion *>(rawEvent.get()))
+        {
+            Singleton::camera->shake();
+            Singleton::water->displaceWaterVolume(event->position, event->radius);
+
+            auto explosion = world->addChild();
+            explosion->addComponent<component::Transform>(event->position, 0.0f, event->radius * glm::vec2{1.0f, 1.0f});
+            explosion->addComponent<component::Explosion>(event->radius);
+
+            explosion->initialize();
+
+            continue;
+        }
+
+        if (const auto _ = dynamic_cast<event::Quit *>(rawEvent.get()))
+        {
+            window->close();
+            return;
+        }
+
+        if (const auto _ = dynamic_cast<event::Restart *>(rawEvent.get()))
+        {
+            restart();
+        }
+
+        if (const auto event = dynamic_cast<event::GameEnd *>(rawEvent.get()))
+        {
+            victoryMenu->visible = true;
+            victoryMenu->active = true;
+            victoryMenuTitleLabel->setText(event->victory ? "You Won :)" : "You lost :(");
+
+            for (auto &ship : ships)
+            {
+                ship->active = false;
+            }
+        }
+    }
+
+    Input::update();
+
+    if (Input::getState(Input::Action::ToggleFullScreen) == Input::State::JustReleased)
+    {
+        window->toggleFullscreen();
+    }
+
+    if (now() - gameStart > MAX_GAME_TIME)
+    {
+        EventQueue::post<event::GameEnd>(true);
+    }
+
+    component::ui::Component::resetUIStates();
+    sceneRoot->update(deltaTime);
+}
+
+void Application::render() const
+{
+    ProfileScope;
+
+    glClearColor(BACKGROUND_COLOR.r, BACKGROUND_COLOR.g, BACKGROUND_COLOR.b, BACKGROUND_COLOR.a);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    sceneRoot->render();
+}
+
+void Application::restart()
+{
+    if (victoryMenu.get() != nullptr)
+    {
+        victoryMenu->visible = false;
+        victoryMenu->active = false;
+    }
+
+    if (world.get() != nullptr)
+    {
+        world->detach();
+    }
+
+    ships.clear();
 
     auto spawnLocations = SPAWN_LOCATIONS | std::ranges::to<std::vector>();
 
 #pragma region world
 
-    sceneRoot = std::make_shared<GameObject>();
+    world = worldContainer->addChild();
 
-    Singleton::camera = sceneRoot->addComponent<component::Camera>(Window::DEFAULT_WIDTH, Window::DEFAULT_HEIGHT);
-    Singleton::water = sceneRoot->addComponent<component::Water>();
-    auto trailRenderer = sceneRoot->addComponent<component::TrailRenderer>();
+    Singleton::camera = world->addComponent<component::Camera>(
+        component::Camera::getWorldLBRT(Window::DEFAULT_WIDTH, Window::DEFAULT_HEIGHT), Window::DEFAULT_WIDTH,
+        Window::DEFAULT_HEIGHT);
+    Singleton::water = world->addComponent<component::Water>();
+    auto trailRenderer = world->addComponent<component::TrailRenderer>();
 
 #pragma region world_children
 
 #pragma region player
 
-    auto playerShipNode = sceneRoot->addChild();
+    auto playerShipNode = world->addChild();
     playerShipNode->addComponent<component::Transform>(
         Random::pop(spawnLocations), Random::random(0.0f, 2.0f * std::numbers::pi_v<float>), SHIP_SCALE);
-    playerShipNode->addComponent<component::Theme>(PLAYER_SHIP_FILL_COLOR, PLAYER_SHIP_OUTLINE_COLOR);
+    playerShipNode->addComponent<component::Theme>(PLAYER_SHIP_FILL_COLOR, std::nullopt,
+                                                   std::optional(component::Theme::Outline{
+                                                       .color = PLAYER_SHIP_OUTLINE_COLOR,
+                                                       .width = SHIP_OUTLINE_WIDTH,
+                                                   }));
     playerShipNode->addComponent<component::Mesh>(draw::polygon(SHIP_VERTICES));
     // playerShipNode->addComponent<component::Hitbox>(Args &&args...);
     playerShipNode->addComponent<component::PlayerShipControls>();
     playerShipNode->addComponent<component::Trail>(trailRenderer, FOAM_COLOR, 0.2f * glm::length(SHIP_SCALE));
+
+    ships.push_back(playerShipNode);
 
 #pragma region player_children
 
@@ -117,14 +323,20 @@ Application::Application()
 
 #pragma region enemy
 
-        auto enemyShipNode = sceneRoot->addChild();
+        auto enemyShipNode = world->addChild();
         enemyShipNode->addComponent<component::Transform>(
             Random::pop(spawnLocations), Random::random(0.0f, 2.0f * std::numbers::pi_v<float>), SHIP_SCALE);
-        enemyShipNode->addComponent<component::Theme>(ENEMY_SHIP_FILL_COLOR, ENEMY_SHIP_OUTLINE_COLOR);
+        enemyShipNode->addComponent<component::Theme>(ENEMY_SHIP_FILL_COLOR, std::nullopt,
+                                                      std::optional(component::Theme::Outline{
+                                                          .color = ENEMY_SHIP_OUTLINE_COLOR,
+                                                          .width = SHIP_OUTLINE_WIDTH,
+                                                      }));
         enemyShipNode->addComponent<component::Mesh>(draw::polygon(SHIP_VERTICES));
         // enemyShipNode->addComponent<component::Hitbox>(Args &&args...);
         enemyShipNode->addComponent<component::AIShipControls>();
         enemyShipNode->addComponent<component::Trail>(trailRenderer, FOAM_COLOR, 0.2f * glm::length(SHIP_SCALE));
+
+        ships.push_back(enemyShipNode);
 
 #pragma region enemy_children
 
@@ -160,7 +372,6 @@ Application::Application()
 #pragma endregion enemy_children
 
 #pragma endregion enemy
-
     }
 
 #pragma endregion enemies
@@ -169,94 +380,15 @@ Application::Application()
 
 #pragma endregion world
 
-    sceneRoot->initialize();
-}
+    world->initialize();
 
-void Application::run()
-{
-    while (!window->shouldClose())
-    {
-        const float deltaTime = clock.tick();
-        if (deltaTime > 1.0f)
-        {
-            continue;
-        }
-
-        update(deltaTime);
-        render();
-
-        window->endFrame();
-
-        ProfilingEndFrame;
-    }
-}
-
-void Application::update(float deltaTime)
-{
-    ProfileScope;
-
-    for (const auto &rawEvent : EventQueue::popAll())
-    {
-        if (const auto event = dynamic_cast<event::Fire *>(rawEvent.get()))
-        {
-            auto cannonball = sceneRoot->addChild();
-            cannonball->addComponent<component::Transform>(event->start, 0.0f, 30.0f * glm::vec2{1.0f, 1.0f});
-            cannonball->addComponent<component::Theme>(CANNONBALL_FILL_COLOR, CANNONBALL_OUTLINE_COLOR);
-            cannonball->addComponent<component::Mesh>(draw::polygon(CANNONBALL_VERTICES));
-            cannonball->addComponent<component::Cannonball>(event->target);
-
-            cannonball->initialize();
-
-            continue;
-        }
-
-        if (const auto event = dynamic_cast<event::RemoveGameObject *>(rawEvent.get()))
-        {
-            const auto gameObjectOption = sceneRoot->getGameObject(event->id);
-            if (gameObjectOption.has_value())
-            {
-                gameObjectOption.value()->detach();
-            }
-
-            continue;
-        }
-
-        if (const auto event = dynamic_cast<event::Explosion *>(rawEvent.get()))
-        {
-            Singleton::camera->shake();
-            Singleton::water->displaceWaterVolume(event->position, event->radius);
-
-            auto explosion = sceneRoot->addChild();
-            explosion->addComponent<component::Transform>(event->position, 0.0f, event->radius * glm::vec2{1.0f, 1.0f});
-            explosion->addComponent<component::Explosion>(event->radius);
-
-            explosion->initialize();
-
-            continue;
-        }
-    }
-
-    Input::update();
-
-    if (Input::getState(Input::Action::ToggleFullScreen) == Input::State::JustReleased)
-    {
-        window->toggleFullscreen();
-    }
-
-    sceneRoot->update(deltaTime);
-}
-
-void Application::render() const
-{
-    ProfileScope;
-
-    glClearColor(BACKGROUND_COLOR.r, BACKGROUND_COLOR.g, BACKGROUND_COLOR.b, BACKGROUND_COLOR.a);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    sceneRoot->render();
+    gameStart = now();
 }
 
 void Application::onResize(uint32_t width, uint32_t height)
 {
     Singleton::camera->onViewportResize(width, height);
+    Singleton::camera->lrbt = component::Camera::getWorldLBRT(width, height);
+
+    Singleton::uiCamera->onViewportResize(width, height);
 }

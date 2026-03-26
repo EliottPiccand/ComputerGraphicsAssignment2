@@ -20,6 +20,7 @@ class Input
         Fire,
         CancelFire,
         ToggleFullScreen,
+        UIClick,
     };
 
     enum class State
