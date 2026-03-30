@@ -20,7 +20,7 @@ Cannonball::Cannonball(const glm::vec2 &target) : target(target)
 
 void Cannonball::initialize()
 {
-    const auto transformOption = owner->findFirstComponentInParents<Transform>();
+    const auto transformOption = owner.lock()->findFirstComponentInParents<Transform>();
     assert(
         transformOption.has_value() &&
         "No transform found! component::Cannonball needs its node or one of its  parents has a component::Transform");
@@ -31,12 +31,14 @@ void Cannonball::update(float deltaTime)
 {
     ProfileScope;
 
+    auto transform = this->transform.lock();
+
     const glm::mat3 resolvedTransform = transform->resolve();
     const glm::vec2 position = glm::vec2(resolvedTransform[2]);
 
     if (glm::length(target - position) < REACH_ERROR_MARGIN)
     {
-        EventQueue::post<event::RemoveGameObject>(owner->getId());
+        EventQueue::post<event::RemoveGameObject>(owner.lock()->getId());
         EventQueue::post<event::Explosion>(target, EXPLOSION_RADIUS);
         return;
     }

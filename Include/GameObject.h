@@ -18,7 +18,7 @@ class GameObject : public std::enable_shared_from_this<GameObject>
 
     std::vector<std::shared_ptr<component::Component>> components;
 
-    std::optional<std::shared_ptr<GameObject>> parent;
+    std::optional<std::weak_ptr<GameObject>> parent;
     std::vector<std::shared_ptr<GameObject>> children;
 
     bool initialized = false;
@@ -39,7 +39,7 @@ class GameObject : public std::enable_shared_from_this<GameObject>
     std::optional<std::shared_ptr<GameObject>> getParent() const;
 
     std::optional<std::shared_ptr<GameObject>> getGameObject(GameObjectId id);
-    std::shared_ptr<GameObject> detach();
+    void detach();
 
     template <std::derived_from<component::Component> T, typename... Args>
     std::shared_ptr<T> addComponent(Args &&...args)
@@ -79,7 +79,7 @@ class GameObject : public std::enable_shared_from_this<GameObject>
     template <std::derived_from<component::Component> T>
     std::optional<std::shared_ptr<T>> findFirstComponentInParents(bool searchSelf = true) const
     {
-        auto nodeOption = searchSelf ? std::optional(shared_from_this()) : parent;
+        auto nodeOption = searchSelf ? std::optional(shared_from_this()) : (parent.has_value() ? std::optional(parent->lock()) : std::nullopt);
         while (nodeOption.has_value())
         {
             const auto &node = nodeOption.value();
@@ -91,7 +91,7 @@ class GameObject : public std::enable_shared_from_this<GameObject>
             }
             else
             {
-                nodeOption = node->parent;
+                nodeOption = (node->parent.has_value() ? std::optional(node->parent->lock()) : std::nullopt);
             }
         }
 

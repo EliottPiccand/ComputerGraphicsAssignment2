@@ -18,7 +18,7 @@ void Label::setText(const std::string &text)
 
     const auto [textureId_, size_] = font::Font::renderTextToTexture(text);
     textureId = textureId_;
-    size = size_ * theme->getText().scale + 2.0f * padding;
+    size = size_ * theme.lock()->getText().scale + 2.0f * padding;
 
     requestLayoutUpdate();
 }
@@ -46,7 +46,7 @@ bool Label::render() const
     // component::ui::Component::render();
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    const auto &color = theme->getText().color;
+    const auto &color = theme.lock()->getText().color;
     glColor4f(color.r, color.g, color.b, color.a);
 
     const auto textPosition = getPosition() + padding;

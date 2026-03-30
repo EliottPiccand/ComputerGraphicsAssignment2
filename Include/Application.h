@@ -18,11 +18,11 @@ class Application
     std::unique_ptr<Window> window;
 
     std::shared_ptr<GameObject> sceneRoot;
-    std::shared_ptr<GameObject> worldContainer;
-    std::shared_ptr<GameObject> world;
-    std::shared_ptr<GameObject> victoryMenu;
-    std::shared_ptr<component::ui::Label> victoryMenuTitleLabel;
-    std::vector<std::shared_ptr<GameObject>> ships;
+    std::weak_ptr<GameObject> worldContainer;
+    std::weak_ptr<GameObject> world;
+    std::weak_ptr<GameObject> victoryMenu;
+    std::weak_ptr<component::ui::Label> victoryMenuTitleLabel;
+    std::vector<std::weak_ptr<GameObject>> ships;
 
     Instant gameStart;
 

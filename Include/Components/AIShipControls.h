@@ -17,7 +17,7 @@ namespace component
 class AIShipControls : public Component
 {
   private:
-    std::shared_ptr<Transform> transform;
+    std::weak_ptr<Transform> transform;
     SpeedState speedState = SpeedState::Forward;
 
     Instant lastTurn;

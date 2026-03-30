@@ -19,8 +19,14 @@ void TrailRenderer::registerTrail(std::shared_ptr<Trail> trail)
 
 void TrailRenderer::update(float deltaTime)
 {
-    for (auto &trail : trails)
+    for (auto &trail_weak : trails)
     {
+        if (trail_weak.expired()) {
+            continue; // TODO: remove weak_ptr from trails
+        }
+
+        auto trail = trail_weak.lock();
+
         for (auto &particle : trail->particles)
         {
             particle.intensity -= deltaTime * TRAIL_PARTICLE_INTENTISY_DECAY;
@@ -39,11 +45,16 @@ bool TrailRenderer::render() const
     ProfileScope;
     ProfileScopeGPU("TrailRenderer::render");
 
-    for (const auto &trail : trails)
+    for (const auto &trail_weak : trails)
     {
+        if (trail_weak.expired()) {
+            continue;
+        }
+
+        const auto trail = trail_weak.lock();
+
         for (const auto &particle : trail->particles)
         {
-            // TODO
             glColor4f(trail->color.r, trail->color.g, trail->color.b, particle.intensity / TRAIL_STEP_BLEND_FACTOR);
             glPointSize(lerp(TRAIL_MAX_SIZE, TRAIL_MIN_SIZE, particle.intensity));
             glBegin(GL_POINTS);

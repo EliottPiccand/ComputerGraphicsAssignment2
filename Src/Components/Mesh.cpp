@@ -13,7 +13,7 @@ Mesh::Mesh(Mesh::RenderCallback renderCallback) : renderCallback(renderCallback)
 
 void Mesh::initialize()
 {
-    const auto themeOption = owner->findFirstComponentInParents<Theme>();
+    const auto themeOption = owner.lock()->findFirstComponentInParents<Theme>();
     assert(themeOption.has_value() &&
            "No theme found! component::Mesh needs its node or one of its parents has a component::Theme");
 
@@ -25,6 +25,6 @@ bool Mesh::render() const
     ProfileScope;
     ProfileScopeGPU("Mesh::render");
 
-    renderCallback(theme);
+    renderCallback(theme.lock());
     return false;
 }

@@ -15,7 +15,7 @@ class Mesh : public Component
     using RenderCallback = std::function<void(const std::shared_ptr<Theme> theme)>;
 
   private:
-    std::shared_ptr<Theme> theme;
+    std::weak_ptr<Theme> theme;
     RenderCallback renderCallback;
 
   public:

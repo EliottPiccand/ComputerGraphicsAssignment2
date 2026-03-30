@@ -21,7 +21,7 @@ void PlayerShipControls::initialize()
     Input::bindKey(Input::Action::SpeedDown, GLFW_KEY_S);
     Input::bindKey(Input::Action::TurnRight, GLFW_KEY_D);
 
-    const auto transformOption = owner->findFirstComponentInParents<Transform>();
+    const auto transformOption = owner.lock()->findFirstComponentInParents<Transform>();
     assert(transformOption.has_value() && "No transform found! component::PlayerShipControls needs its node or one of "
                                           "its parents has a component::Transform");
     transform = transformOption.value();
@@ -30,6 +30,8 @@ void PlayerShipControls::initialize()
 void PlayerShipControls::update(float deltaTime)
 {
     ProfileScope;
+
+    auto transform = this->transform.lock();
 
     if (Input::getState(Input::Action::SpeedUp) == Input::State::JustPressed)
     {

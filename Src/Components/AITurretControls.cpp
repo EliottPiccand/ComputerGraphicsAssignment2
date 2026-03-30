@@ -42,7 +42,7 @@ void AITurretControls::pickTargetNextPathPoint()
 
 void AITurretControls::initialize()
 {
-    const auto transformOption = owner->findFirstComponentInParents<Transform>();
+    const auto transformOption = owner.lock()->findFirstComponentInParents<Transform>();
     assert(transformOption.has_value() && "No transform found! component::AITurretControls needs its node or one "
                                           "of its parents has a component::Transform");
     transform = transformOption.value();
@@ -51,6 +51,8 @@ void AITurretControls::initialize()
 void AITurretControls::update(float deltaTime)
 {
     ProfileScope;
+
+    auto transform = this->transform.lock();
 
     const glm::mat3 resolvedTransform = transform->resolve();
     const glm::vec2 position = glm::vec2(resolvedTransform[2]);
@@ -89,7 +91,7 @@ bool AITurretControls::render() const
     ProfileScope;
     ProfileScopeGPU("AITurretControls::render");
 
-    const glm::mat3 resolvedTransform = transform->resolve();
+    const glm::mat3 resolvedTransform = transform.lock()->resolve();
     const glm::vec2 relativeTargetPosition = glm::inverse(resolvedTransform) * glm::vec3(target, 1.0f);
 
     draw::dashedArrow({0.0f, 0.0f}, relativeTargetPosition, AIM_RAY_COLOR, 3.0f, 0.0f);

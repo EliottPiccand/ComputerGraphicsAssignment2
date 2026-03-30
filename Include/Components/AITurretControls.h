@@ -16,7 +16,7 @@ namespace component
 class AITurretControls : public Component
 {
   private:
-    std::shared_ptr<Transform> transform;
+    std::weak_ptr<Transform> transform;
     glm::vec2 target;
     glm::vec2 targetNextPathPoint;
     Instant lastFireTry;

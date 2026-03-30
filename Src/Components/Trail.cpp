@@ -16,19 +16,19 @@ Trail::Trail(std::shared_ptr<TrailRenderer> renderer, const Color &color, std::o
 
 void Trail::initialize()
 {
-    const auto transformOption = owner->findFirstComponentInParents<Transform>();
+    const auto transformOption = owner.lock()->findFirstComponentInParents<Transform>();
     assert(transformOption.has_value() &&
            "No transform found! component::Trail needs its node or one of its parents has a component::Transform");
     transform = transformOption.value();
 
-    renderer->registerTrail(std::dynamic_pointer_cast<Trail>(shared_from_this()));
+    renderer.lock()->registerTrail(std::dynamic_pointer_cast<Trail>(shared_from_this()));
 }
 
 void Trail::update(float deltaTime)
 {
     ProfileScope;
 
-    const auto position = glm::vec2(transform->resolve()[2]);
+    const auto position = glm::vec2(transform.lock()->resolve()[2]);
     const float distanceToPreviousTrailStep = (particles.size() > 0)
                                                   ? glm::length(position - particles.front().position)
                                                   : std::numeric_limits<float>::infinity();
@@ -42,7 +42,7 @@ void Trail::update(float deltaTime)
 
         if (waterDisplacementRadius.has_value())
         {
-            Singleton::water->displaceWaterVolume(position, waterDisplacementRadius.value());
+            Singleton::water.lock()->displaceWaterVolume(position, waterDisplacementRadius.value());
         }
     }
 }

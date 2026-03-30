@@ -49,13 +49,13 @@ class Component : public component::Component
 
     bool clickable = false;
     bool hovered;
-    std::shared_ptr<component::Theme> theme;
+    std::weak_ptr<component::Theme> theme;
     
     Direction direction = Direction::Vertical;
     Align align = Align::LeftOrTop;
     std::optional<Anchor> anchor = std::nullopt;
 
-    std::optional<std::shared_ptr<component::ui::Component>> parent;
+    std::optional<std::weak_ptr<component::ui::Component>> parent;
     std::vector<std::shared_ptr<component::ui::Component>> children;
     bool isLayoutDirty = true;
 

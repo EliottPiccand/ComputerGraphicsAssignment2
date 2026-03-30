@@ -21,11 +21,11 @@ class Trail : public Component
   private:
     static constexpr const size_t MAX_TRAIL_PARTICLES = 100;
 
-    std::shared_ptr<TrailRenderer> renderer;
+    std::weak_ptr<TrailRenderer> renderer;
 
     Color color;
     std::optional<float> waterDisplacementRadius;
-    std::shared_ptr<Transform> transform;
+    std::weak_ptr<Transform> transform;
 
     struct TrailParticle
     {

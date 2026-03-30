@@ -7,7 +7,7 @@
 
 struct Singleton
 {
-    static inline std::shared_ptr<component::Camera> camera;
-    static inline std::shared_ptr<component::Camera> uiCamera;
-    static inline std::shared_ptr<component::Water> water;
+    static inline std::weak_ptr<component::Camera> camera;
+    static inline std::weak_ptr<component::Camera> uiCamera;
+    static inline std::weak_ptr<component::Water> water;
 };

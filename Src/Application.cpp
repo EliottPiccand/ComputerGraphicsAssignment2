@@ -75,7 +75,7 @@ Application::Application()
 
 #pragma region ui
 
-    victoryMenu = sceneRoot->addChild();
+    auto victoryMenu = sceneRoot->addChild();
     victoryMenu->visible = false;
     victoryMenu->active = false;
     Singleton::uiCamera = victoryMenu->addComponent<component::Camera>(
@@ -90,6 +90,8 @@ Application::Application()
                                                     .color = TEXT_COLOR,
                                                     .scale = 0.1f,
                                                 }));
+    this->victoryMenu = victoryMenu;
+
     auto victoryMenuComponent = victoryMenu->addComponent<component::ui::Component>();
     victoryMenuComponent->setDirection(component::ui::Component::Direction::Vertical);
     victoryMenuComponent->setPadding(glm::vec2{4.0f, 5.0f});
@@ -149,6 +151,7 @@ void Application::update(float deltaTime)
     {
         if (const auto event = dynamic_cast<event::Fire *>(rawEvent.get()))
         {
+            auto world = this->world.lock();
             auto cannonball = world->addChild();
             cannonball->addComponent<component::Transform>(event->start, 0.0f, 30.0f * glm::vec2{1.0f, 1.0f});
             cannonball->addComponent<component::Theme>(CANNONBALL_FILL_COLOR, CANNONBALL_OUTLINE_COLOR);
@@ -173,10 +176,10 @@ void Application::update(float deltaTime)
 
         if (const auto event = dynamic_cast<event::Explosion *>(rawEvent.get()))
         {
-            Singleton::camera->shake();
-            Singleton::water->displaceWaterVolume(event->position, event->radius);
+            Singleton::camera.lock()->shake();
+            Singleton::water.lock()->displaceWaterVolume(event->position, event->radius);
 
-            auto explosion = world->addChild();
+            auto explosion = world.lock()->addChild();
             explosion->addComponent<component::Transform>(event->position, 0.0f, event->radius * glm::vec2{1.0f, 1.0f});
             explosion->addComponent<component::Explosion>(event->radius);
 
@@ -198,13 +201,14 @@ void Application::update(float deltaTime)
 
         if (const auto event = dynamic_cast<event::GameEnd *>(rawEvent.get()))
         {
+            auto victoryMenu = this->victoryMenu.lock();
             victoryMenu->visible = true;
             victoryMenu->active = true;
-            victoryMenuTitleLabel->setText(event->victory ? "You Won :)" : "You lost :(");
+            victoryMenuTitleLabel.lock()->setText(event->victory ? "You Won :)" : "You lost :(");
 
             for (auto &ship : ships)
             {
-                ship->active = false;
+                ship.lock()->active = false;
             }
         }
     }
@@ -216,10 +220,10 @@ void Application::update(float deltaTime)
         window->toggleFullscreen();
     }
 
-    // if (now() - gameStart > MAX_GAME_TIME)
-    // {
-    //     EventQueue::post<event::GameEnd>(true);
-    // }
+    if (now() - gameStart > MAX_GAME_TIME)
+    {
+        EventQueue::post<event::GameEnd>(true);
+    }
 
     component::ui::Component::resetUIStates();
     sceneRoot->update(deltaTime);
@@ -237,15 +241,19 @@ void Application::render() const
 
 void Application::restart()
 {
+    auto victoryMenu = this->victoryMenu.lock();
+
     if (victoryMenu.get() != nullptr)
     {
         victoryMenu->visible = false;
         victoryMenu->active = false;
     }
 
-    if (world.get() != nullptr)
+    auto old_world = this->world.lock();
+
+    if (old_world.get() != nullptr)
     {
-        world->detach();
+        old_world->detach();
     }
 
     ships.clear();
@@ -254,7 +262,9 @@ void Application::restart()
 
 #pragma region world
 
-    world = worldContainer->addChild();
+    auto worldContainer = this->worldContainer.lock();
+    auto world = worldContainer->addChild();
+    this->world = world;
 
     Singleton::camera = world->addComponent<component::Camera>(
         component::Camera::getWorldLBRT(Window::DEFAULT_WIDTH, Window::DEFAULT_HEIGHT), Window::DEFAULT_WIDTH,
@@ -387,8 +397,8 @@ void Application::restart()
 
 void Application::onResize(uint32_t width, uint32_t height)
 {
-    Singleton::camera->onViewportResize(width, height);
-    Singleton::camera->lrbt = component::Camera::getWorldLBRT(width, height);
+    Singleton::camera.lock()->onViewportResize(width, height);
+    Singleton::camera.lock()->lrbt = component::Camera::getWorldLBRT(width, height);
 
-    Singleton::uiCamera->onViewportResize(width, height);
+    Singleton::uiCamera.lock()->onViewportResize(width, height);
 }

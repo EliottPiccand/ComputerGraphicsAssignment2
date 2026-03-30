@@ -56,7 +56,7 @@ glm::mat3 Transform::resolve() const
     ProfileScope;
 
     glm::mat3 transform;
-    const auto ownerParentOpt = owner->getParent();
+    const auto ownerParentOpt = owner.lock()->getParent();
 
     if (ownerParentOpt.has_value())
     {

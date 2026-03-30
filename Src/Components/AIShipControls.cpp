@@ -59,7 +59,7 @@ AIShipControls::AIShipControls() : lastTurn(now() - TURN_MIN_INTERVAL)
 
 void AIShipControls::pickTarget()
 {
-    const auto position = glm::vec2(transform->resolve()[2]);
+    const auto position = glm::vec2(transform.lock()->resolve()[2]);
     float distance;
 
     do
@@ -71,7 +71,7 @@ void AIShipControls::pickTarget()
 
 void AIShipControls::initialize()
 {
-    const auto transformOption = owner->findFirstComponentInParents<Transform>();
+    const auto transformOption = owner.lock()->findFirstComponentInParents<Transform>();
     assert(transformOption.has_value() && "No transform found! component::AIShipControls needs its node or one of "
                                           "its parents has a component::Transform");
     transform = transformOption.value();
@@ -82,6 +82,7 @@ void AIShipControls::initialize()
 void AIShipControls::update(float deltaTime)
 {
     ProfileScope;
+    auto transform = this->transform.lock();
 
     const glm::vec2 position = transform->resolve()[2];
     const glm::vec2 direction = glm::rotate(glm::vec2(0.0f, -1.0f), transform->getRotation());
@@ -123,7 +124,7 @@ bool AIShipControls::render() const
     ProfileScope;
     ProfileScopeGPU("AIShipControls::render");
 
-    const glm::mat3 resolvedTransform = transform->resolve();
+    const glm::mat3 resolvedTransform = transform.lock()->resolve();
     const glm::vec2 relativeTargetPosition = glm::inverse(resolvedTransform) * glm::vec3(target, 1.0f);
 
     draw::dashedArrow({0.0f, 0.0f}, relativeTargetPosition, AIM_RAY_COLOR, 3.0f, 0.0f);

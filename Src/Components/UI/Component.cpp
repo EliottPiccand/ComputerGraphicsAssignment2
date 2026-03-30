@@ -123,7 +123,7 @@ void Component::requestLayoutUpdate()
     isLayoutDirty = true;
     if (parent.has_value())
     {
-        parent.value()->requestLayoutUpdate();
+        parent.value().lock()->requestLayoutUpdate();
     }
 }
 
@@ -133,7 +133,7 @@ glm::vec2 Component::getPosition() const
 
     if (parent.has_value())
     {
-        pos += parent.value()->getPosition();
+        pos += parent.value().lock()->getPosition();
     }
 
     return pos;
@@ -172,6 +172,7 @@ void Component::setAnchor(const Anchor &anchor)
 
 void Component::initialize()
 {
+    auto owner = this->owner.lock();
     const auto themeOption = owner->findFirstComponentInParents<component::Theme>();
     assert(themeOption.has_value() &&
            "No theme found! component::ui::Component needs its node or one of its parents has a component::Theme");
@@ -180,7 +181,7 @@ void Component::initialize()
     parent = owner->findFirstComponentInParents<component::ui::Component>(false);
     if (parent.has_value())
     {
-        parent.value()->children.push_back(std::dynamic_pointer_cast<ui::Component>(shared_from_this()));
+        parent.value().lock()->children.push_back(std::dynamic_pointer_cast<ui::Component>(shared_from_this()));
     }
 }
 
@@ -199,7 +200,7 @@ void Component::update(float deltaTime)
         updateLayout();
     }
 
-    const auto &mousePosRelative = Singleton::uiCamera->toWorldPosition(Input::getMousePos()) - getPosition();
+    const auto &mousePosRelative = Singleton::uiCamera.lock()->toWorldPosition(Input::getMousePos()) - getPosition();
     hovered = 0.0f <= mousePosRelative.x && mousePosRelative.x <= size.x && 0.0f <= mousePosRelative.y &&
               mousePosRelative.y <= size.y && !hoverCatched;
 
@@ -214,6 +215,7 @@ bool Component::render() const
     ProfileScope;
     ProfileScopeGPU("Component::render");
 
+    const auto theme = this->theme.lock();
 
     const auto &baseFillColor = parent.has_value() ? TRANSPARENT_COLOR : theme->getFillColor();
     const auto &fillColor = (clickable && hovered) ? theme->getHoveredFillColor().value_or(baseFillColor) : baseFillColor;

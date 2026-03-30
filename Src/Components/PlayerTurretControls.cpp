@@ -22,8 +22,8 @@ void PlayerTurretControls::initialize()
 {
     Input::bindMouseButton(Input::Action::Fire, GLFW_MOUSE_BUTTON_LEFT);
     Input::bindMouseButton(Input::Action::CancelFire, GLFW_MOUSE_BUTTON_RIGHT);
-
-    const auto transformOption = owner->findFirstComponentInParents<Transform>();
+    
+    const auto transformOption = owner.lock()->findFirstComponentInParents<Transform>();
     assert(transformOption.has_value() && "No transform found! component::PlayerTurretControls needs its node or one "
                                           "of its parents has a component::Transform");
     transform = transformOption.value();
@@ -32,11 +32,12 @@ void PlayerTurretControls::initialize()
 void PlayerTurretControls::update(float deltaTime)
 {
     ProfileScope;
+    auto transform = this->transform.lock();
 
     const glm::mat3 resolvedTransform = transform->resolve();
     const glm::vec2 position = glm::vec2(resolvedTransform[2]);
 
-    const glm::vec2 cursorPosition = Singleton::camera->toWorldPosition(Input::getMousePos());
+    const glm::vec2 cursorPosition = Singleton::camera.lock()->toWorldPosition(Input::getMousePos());
     aimingValidPosition = 0.0f <= cursorPosition.x && cursorPosition.x < WORLD_WIDTH && 0.0f <= cursorPosition.y &&
                           cursorPosition.y < WORLD_HEIGHT;
 
@@ -75,7 +76,7 @@ bool PlayerTurretControls::render() const
 
     if (target.has_value() && aimingValidPosition)
     {
-        const glm::mat3 resolvedTransform = transform->resolve();
+        const glm::mat3 resolvedTransform = transform.lock()->resolve();
         const glm::vec2 relativeTargetPosition = glm::inverse(resolvedTransform) * glm::vec3(target.value(), 1.0f);
 
         draw::dashedArrow({0.0f, 0.0f}, relativeTargetPosition, AIM_RAY_COLOR, AIM_RAY_WIDTH, AIM_RAY_ARROW_TIP_SIZE);

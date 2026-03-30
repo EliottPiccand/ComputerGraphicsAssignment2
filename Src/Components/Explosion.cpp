@@ -30,7 +30,7 @@ Explosion::Explosion(float radius)
 
 void Explosion::initialize()
 {
-    const auto transformOption = owner->findFirstComponentInParents<Transform>();
+    const auto transformOption = owner.lock()->findFirstComponentInParents<Transform>();
     assert(transformOption.has_value() &&
            "No theme found! component::Explosion needs its node or one of its parents has a component::Transform");
 
@@ -42,7 +42,7 @@ void Explosion::update(float deltaTime)
     ProfileScope;
 
     radius += EXPANSION_RATE * deltaTime;
-    transform->setScale(radius);
+    transform.lock()->setScale(radius);
 
     if (radius > MAX_RADIUS)
     {

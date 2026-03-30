@@ -11,7 +11,7 @@ namespace component
 class Radar : public Component
 {
   private:
-    std::shared_ptr<Transform> transform;
+    std::weak_ptr<Transform> transform;
 
   public:
     void initialize() override;

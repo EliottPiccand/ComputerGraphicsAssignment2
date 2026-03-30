@@ -12,7 +12,7 @@ namespace component
 class TrailRenderer : public Component
 {
   private:
-    std::vector<std::shared_ptr<Trail>> trails;
+    std::vector<std::weak_ptr<Trail>> trails;
 
   public:
     void registerTrail(std::shared_ptr<Trail> trail);

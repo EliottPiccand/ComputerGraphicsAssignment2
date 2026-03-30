@@ -19,7 +19,7 @@ class Explosion : public Component
         EXPLOSION_LAYER_2_COLOR,
     };
 
-    std::shared_ptr<Transform> transform;
+    std::weak_ptr<Transform> transform;
     float radius;
     std::array<float, COLORS.size()> rotations;
 

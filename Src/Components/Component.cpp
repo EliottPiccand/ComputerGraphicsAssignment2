@@ -24,5 +24,5 @@ void Component::setOwner(std::shared_ptr<GameObject> gameObject)
 
 std::shared_ptr<GameObject> Component::getOwner() const
 {
-    return owner;
+    return owner.lock();
 }

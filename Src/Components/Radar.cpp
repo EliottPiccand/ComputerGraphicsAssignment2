@@ -9,7 +9,7 @@ using namespace component;
 
 void Radar::initialize()
 {
-    const auto transformOption = owner->findFirstComponentInParents<Transform>();
+    const auto transformOption = owner.lock()->findFirstComponentInParents<Transform>();
     assert(transformOption.has_value() &&
            "No transform found! component::Radar needs its node or one of its parents has a component::Transform");
     transform = transformOption.value();
@@ -19,5 +19,5 @@ void Radar::update(float deltaTime)
 {
     ProfileScope;
 
-    transform->rotate(ROTATION_SPEED * deltaTime);
+    transform.lock()->rotate(ROTATION_SPEED * deltaTime);
 }

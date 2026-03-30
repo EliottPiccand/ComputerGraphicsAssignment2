@@ -24,7 +24,7 @@ std::shared_ptr<GameObject> GameObject::addChild()
 
 std::optional<std::shared_ptr<GameObject>> GameObject::getParent() const
 {
-    return parent;
+    return parent.has_value() ? std::optional(parent->lock()) : std::nullopt;
 }
 
 std::optional<std::shared_ptr<GameObject>> GameObject::getGameObject(GameObjectId id)
@@ -46,19 +46,21 @@ std::optional<std::shared_ptr<GameObject>> GameObject::getGameObject(GameObjectI
     return std::nullopt;
 }
 
-std::shared_ptr<GameObject> GameObject::detach()
+void GameObject::detach()
 {
-    while (!children.empty())
+    std::vector<std::shared_ptr<GameObject>> localChildren;
+    localChildren.swap(children);
+
+    for (auto &child : localChildren)
     {
-        children[0]->detach();
+        child->detach();
     }
 
     if (parent.has_value())
     {
-        auto &siblings = parent.value()->children;
-
+        auto &siblings = parent->lock()->children;
+        
         const auto it = std::find_if(siblings.begin(), siblings.end(), [&](auto o) { return o->id == id; });
-
         if (it != siblings.end())
         {
             siblings.erase(it);
@@ -66,8 +68,6 @@ std::shared_ptr<GameObject> GameObject::detach()
 
         parent = std::nullopt;
     }
-
-    return shared_from_this();
 }
 
 void GameObject::initialize()

@@ -14,7 +14,7 @@ namespace component
 class PlayerTurretControls : public Component
 {
   private:
-    std::shared_ptr<Transform> transform;
+    std::weak_ptr<Transform> transform;
     std::optional<glm::vec2> target;
     bool aimingValidPosition;
 

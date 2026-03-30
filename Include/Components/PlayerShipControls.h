@@ -12,7 +12,7 @@ namespace component
 class PlayerShipControls : public Component
 {
   private:
-    std::shared_ptr<Transform> transform;
+    std::weak_ptr<Transform> transform;
     SpeedState speedState = SpeedState::Stop;
 
   public:

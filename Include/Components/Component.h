@@ -11,7 +11,7 @@ class Component : public std::enable_shared_from_this<Component>
 {
 
   protected:
-    std::shared_ptr<GameObject> owner;
+    std::weak_ptr<GameObject> owner;
 
   public:
     virtual ~Component() = default;
