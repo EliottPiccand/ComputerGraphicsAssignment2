@@ -306,6 +306,70 @@ void Application::render() const
     glClear(GL_COLOR_BUFFER_BIT);
 
     sceneRoot->render();
+
+    constexpr float HEALTH_BAR_WIDTH = 55.0f;
+    constexpr float HEALTH_BAR_HEIGHT = 4.0f;
+    constexpr float HEALTH_BAR_Y_OFFSET = 70.0f;
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    for (const auto &[shipId, hp] : shipHitPoints)
+    {
+        if (hp <= 0)
+        {
+            continue;
+        }
+
+        const auto shipOption = sceneRoot->getGameObject(shipId);
+        if (!shipOption.has_value())
+        {
+            continue;
+        }
+
+        const auto transformOption = shipOption.value()->getComponent<component::Transform>();
+        if (!transformOption.has_value())
+        {
+            continue;
+        }
+
+        const glm::vec2 shipPosition = glm::vec2(transformOption.value()->resolve()[2]);
+        const float ratio = std::clamp(static_cast<float>(hp) / static_cast<float>(SHIP_START_HP), 0.0f, 1.0f);
+
+        const float x0 = shipPosition.x - HEALTH_BAR_WIDTH * 0.5f;
+        const float x1 = shipPosition.x + HEALTH_BAR_WIDTH * 0.5f;
+        const float y0 = shipPosition.y + HEALTH_BAR_Y_OFFSET;
+        const float y1 = y0 + HEALTH_BAR_HEIGHT;
+
+        // thin dark background
+        glColor4f(0.05f, 0.05f, 0.05f, 0.85f);
+        glBegin(GL_QUADS);
+            glVertex2f(x0, y0);
+            glVertex2f(x1, y0);
+            glVertex2f(x1, y1);
+            glVertex2f(x0, y1);
+        glEnd();
+
+        // tiny colored fill
+        const float fillX1 = x0 + ratio * HEALTH_BAR_WIDTH;
+        const bool isEnemy = enemyShipIds.contains(shipId);
+        if (isEnemy)
+        {
+            glColor4f(0.9f, 0.2f, 0.2f, 0.95f);
+        }
+        else
+        {
+            glColor4f(0.2f, 0.95f, 0.3f, 0.95f);
+        }
+
+        glBegin(GL_QUADS);
+            glVertex2f(x0, y0);
+            glVertex2f(fillX1, y0);
+            glVertex2f(fillX1, y1);
+            glVertex2f(x0, y1);
+        glEnd();
+    }
 }
 
 void Application::restart()
