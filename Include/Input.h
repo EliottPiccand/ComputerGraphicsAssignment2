@@ -45,5 +45,6 @@ class Input
 
     [[nodiscard]] static State getState(Action action);
     [[nodiscard]] static bool isPressed(Action action);
+    [[nodiscard]] static bool isMouseInWindow();
     [[nodiscard]] static glm::vec2 getMousePos();
 };

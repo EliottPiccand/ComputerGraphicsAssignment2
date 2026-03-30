@@ -15,7 +15,8 @@ class PlayerTurretControls : public Component
 {
   private:
     std::weak_ptr<Transform> transform;
-    std::optional<glm::vec2> target;
+    std::optional<glm::vec2> lastKnownAimTarget;
+    std::optional<glm::vec2> previewTarget;
     bool aimingValidPosition;
 
   public:

@@ -81,6 +81,22 @@ bool Input::isPressed(Action action)
     return states.at(action) == State::JustPressed || states.at(action) == State::HeldPressed;
 }
 
+bool Input::isMouseInWindow()
+{
+    assert(window_handle != nullptr && "calling Input::isMouseInWindow before initializing");
+
+    double xpos = 0.0;
+    double ypos = 0.0;
+    glfwGetCursorPos(window_handle, &xpos, &ypos);
+
+    int windowWidth = 0;
+    int windowHeight = 0;
+    glfwGetWindowSize(window_handle, &windowWidth, &windowHeight);
+
+    return 0.0 <= xpos && xpos < static_cast<double>(windowWidth) && 0.0 <= ypos &&
+           ypos < static_cast<double>(windowHeight);
+}
+
 glm::vec2 Input::getMousePos()
 {
     assert(window_handle != nullptr && "calling Input::getMousePos before initializing");
