@@ -96,8 +96,10 @@ glm::vec2 Input::getMousePos()
     int framebufferHeight = 0;
     glfwGetFramebufferSize(window_handle, &framebufferWidth, &framebufferHeight);
 
-    const float scaleX = windowWidth > 0 ? static_cast<float>(framebufferWidth) / static_cast<float>(windowWidth) : 1.0f;
-    const float scaleY = windowHeight > 0 ? static_cast<float>(framebufferHeight) / static_cast<float>(windowHeight) : 1.0f;
+    const float scaleX =
+        windowWidth > 0 ? static_cast<float>(framebufferWidth) / static_cast<float>(windowWidth) : 1.0f;
+    const float scaleY =
+        windowHeight > 0 ? static_cast<float>(framebufferHeight) / static_cast<float>(windowHeight) : 1.0f;
 
     return {static_cast<float>(xpos) * scaleX, static_cast<float>(ypos) * scaleY};
 }

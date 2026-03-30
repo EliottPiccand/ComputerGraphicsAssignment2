@@ -1,20 +1,17 @@
 #include "Components/RigidBody.h"
 
+#include <algorithm>
+#include <limits>
+#include <numbers>
+#include <print>
+#include <unordered_map>
+
 #include "Components/Cannonball.h"
 #include "Events/EventQueue.h"
 #include "Events/Explosion.h"
 #include "Events/RemoveGameObject.h"
 #include "GameObject.h"
 #include "Utils/Constants.h"
-
-#include <algorithm>
-#include <cmath>
-#include <limits>
-#include <memory>
-#include <numbers>
-#include <print>
-#include <unordered_map>
-#include <vector>
 
 using namespace component;
 
@@ -162,7 +159,8 @@ CollisionInfo satCollision(const std::vector<glm::vec2> &a, const std::vector<gl
     return result;
 }
 
-glm::vec2 findContactPoint(const std::vector<glm::vec2> &incident, const std::vector<glm::vec2> &reference, const glm::vec2 &normal)
+glm::vec2 findContactPoint(const std::vector<glm::vec2> &incident, const std::vector<glm::vec2> &reference,
+                           const glm::vec2 &normal)
 {
     float bestIncident = std::numeric_limits<float>::infinity();
     glm::vec2 contactIncident = incident.front();
@@ -260,7 +258,8 @@ void clampBodyInsideWorld(const ConvexPolygon &collider, const std::shared_ptr<T
 } // namespace
 
 RigidBody::RigidBody(ConvexPolygon collider, bool fixed, float mass, float restitution)
-    : collider(std::move(collider)), mass(std::max(mass, 1.0e-3f)), restitution(std::clamp(restitution, 0.0f, 1.0f)), fixed(fixed)
+    : collider(std::move(collider)), mass(std::max(mass, 1.0e-3f)), restitution(std::clamp(restitution, 0.0f, 1.0f)),
+      fixed(fixed)
 {
     if (this->collider.empty())
     {
@@ -287,7 +286,7 @@ RigidBody::RigidBody(ConvexPolygon collider, bool fixed, float mass, float resti
 
 RigidBody::~RigidBody()
 {
-    const auto it = std::find_if(bodies.begin(), bodies.end(), [&](auto el) { return el.lock().get() == this;});
+    const auto it = std::find_if(bodies.begin(), bodies.end(), [&](auto el) { return el.lock().get() == this; });
     if (it != bodies.end())
     {
         bodies.erase(it);
@@ -472,7 +471,8 @@ void RigidBody::simulateAll(float deltaTime)
 
                 const float raCrossN = cross2(ra, collision.normal);
                 const float rbCrossN = cross2(rb, collision.normal);
-                const float denom = invMassSum + (raCrossN * raCrossN) * a->invInertia + (rbCrossN * rbCrossN) * b->invInertia;
+                const float denom =
+                    invMassSum + (raCrossN * raCrossN) * a->invInertia + (rbCrossN * rbCrossN) * b->invInertia;
                 if (denom <= POSITION_EPSILON)
                 {
                     continue;
