@@ -14,6 +14,7 @@
 #include "Components/PlayerShipControls.h"
 #include "Components/PlayerTurretControls.h"
 #include "Components/Radar.h"
+#include "Components/RigidBody.h"
 #include "Components/Theme.h"
 #include "Components/Trail.h"
 #include "Components/TrailRenderer.h"
@@ -285,7 +286,7 @@ void Application::restart()
                                                        .width = SHIP_OUTLINE_WIDTH,
                                                    }));
     playerShipNode->addComponent<component::Mesh>(draw::polygon(SHIP_VERTICES));
-    // playerShipNode->addComponent<component::Hitbox>(Args &&args...);
+    playerShipNode->addComponent<component::RigidBody>();
     playerShipNode->addComponent<component::PlayerShipControls>();
     playerShipNode->addComponent<component::Trail>(trailRenderer, FOAM_COLOR, 0.2f * glm::length(SHIP_SCALE));
 
@@ -342,7 +343,7 @@ void Application::restart()
                                                           .width = SHIP_OUTLINE_WIDTH,
                                                       }));
         enemyShipNode->addComponent<component::Mesh>(draw::polygon(SHIP_VERTICES));
-        // enemyShipNode->addComponent<component::Hitbox>(Args &&args...);
+        enemyShipNode->addComponent<component::RigidBody>();
         enemyShipNode->addComponent<component::AIShipControls>();
         enemyShipNode->addComponent<component::Trail>(trailRenderer, FOAM_COLOR, 0.2f * glm::length(SHIP_SCALE));
 
