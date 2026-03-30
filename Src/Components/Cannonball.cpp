@@ -14,8 +14,13 @@ constexpr const float REACH_ERROR_MARGIN = 5.0f; // m
 
 using namespace component;
 
-Cannonball::Cannonball(const glm::vec2 &target) : target(target)
+Cannonball::Cannonball(const glm::vec2 &target, GameObjectId shooterId) : target(target), shooterId(shooterId)
 {
+}
+
+GameObjectId Cannonball::getShooterId() const
+{
+    return shooterId;
 }
 
 void Cannonball::initialize()

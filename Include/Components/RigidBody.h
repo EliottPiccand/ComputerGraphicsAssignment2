@@ -30,14 +30,27 @@ class RigidBody : public Component
     KineticState previousState;
 
     std::weak_ptr<Transform> transform;
+    ConvexPolygon collider;
+
+    glm::vec2 velocity = {0.0f, 0.0f};
+    float angularVelocity = 0.0f;
+
+    float mass = 1.0f;
+    float invMass = 1.0f;
+    float inertia = 1.0f;
+    float invInertia = 1.0f;
+    float restitution = 0.1f;
+
     bool fixed;
 
   public:
-    RigidBody(bool fixed = false);
+    RigidBody(ConvexPolygon collider = {}, bool fixed = false, float mass = 1.0f, float restitution = 0.1f);
     ~RigidBody();
 
     void initialize() override;
     void update(float deltaTime) override;
+
+    static void simulateAll(float deltaTime);
 };
 
 } // namespace component

@@ -80,7 +80,10 @@ void AITurretControls::update(float deltaTime)
 
         if (Random::random(0.0f, 1.0f) < FIRE_PROBABILITY_PER_TRY)
         {
-            EventQueue::post<event::Fire>(position, target);
+            const auto turretOwner = owner.lock();
+            const auto shipOwner = turretOwner->getParent();
+            const auto shooterId = shipOwner.has_value() ? shipOwner.value()->getId() : turretOwner->getId();
+            EventQueue::post<event::Fire>(position, target, shooterId);
         }
     }
 }

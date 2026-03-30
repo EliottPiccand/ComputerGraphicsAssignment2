@@ -87,5 +87,17 @@ glm::vec2 Input::getMousePos()
 
     double xpos, ypos;
     glfwGetCursorPos(window_handle, &xpos, &ypos);
-    return {static_cast<float>(xpos), static_cast<float>(ypos)};
+
+    int windowWidth = 0;
+    int windowHeight = 0;
+    glfwGetWindowSize(window_handle, &windowWidth, &windowHeight);
+
+    int framebufferWidth = 0;
+    int framebufferHeight = 0;
+    glfwGetFramebufferSize(window_handle, &framebufferWidth, &framebufferHeight);
+
+    const float scaleX = windowWidth > 0 ? static_cast<float>(framebufferWidth) / static_cast<float>(windowWidth) : 1.0f;
+    const float scaleY = windowHeight > 0 ? static_cast<float>(framebufferHeight) / static_cast<float>(windowHeight) : 1.0f;
+
+    return {static_cast<float>(xpos) * scaleX, static_cast<float>(ypos) * scaleY};
 }

@@ -64,7 +64,10 @@ void PlayerTurretControls::update(float deltaTime)
     {
         if (aimingValidPosition)
         {
-            EventQueue::post<event::Fire>(position, target.value());
+            const auto turretOwner = owner.lock();
+            const auto shipOwner = turretOwner->getParent();
+            const auto shooterId = shipOwner.has_value() ? shipOwner.value()->getId() : turretOwner->getId();
+            EventQueue::post<event::Fire>(position, target.value(), shooterId);
         }
         target = std::nullopt;
     }

@@ -40,7 +40,7 @@
 #include "Utils/Random.h"
 #include "Window.h"
 
-constexpr const Duration MAX_GAME_TIME = std::chrono::seconds(3);
+constexpr const Duration MAX_GAME_TIME = std::chrono::seconds(15);
 
 constexpr const glm::vec2 SHIP_SCALE = {50.0f, 50.0f};
 constexpr const std::array SPAWN_LOCATIONS = {
@@ -92,6 +92,11 @@ Application::Application()
                                                     .scale = 0.1f,
                                                 }));
     this->victoryMenu = victoryMenu;
+
+    {
+        const auto [framebufferWidth, framebufferHeight] = window->getFramebufferSize();
+        onResize(framebufferWidth, framebufferHeight);
+    }
 
     auto victoryMenuComponent = victoryMenu->addComponent<component::ui::Component>();
     victoryMenuComponent->setDirection(component::ui::Component::Direction::Vertical);
@@ -157,7 +162,9 @@ void Application::update(float deltaTime)
             cannonball->addComponent<component::Transform>(event->start, 0.0f, 30.0f * glm::vec2{1.0f, 1.0f});
             cannonball->addComponent<component::Theme>(CANNONBALL_FILL_COLOR, CANNONBALL_OUTLINE_COLOR);
             cannonball->addComponent<component::Mesh>(draw::polygon(CANNONBALL_VERTICES));
-            cannonball->addComponent<component::Cannonball>(event->target);
+            cannonball->addComponent<component::RigidBody>(
+                component::ConvexPolygon(CANNONBALL_VERTICES.begin(), CANNONBALL_VERTICES.end()), false, 0.5f, 0.1f);
+            cannonball->addComponent<component::Cannonball>(event->target, event->shooterId);
 
             cannonball->initialize();
 
@@ -228,6 +235,7 @@ void Application::update(float deltaTime)
 
     component::ui::Component::resetUIStates();
     sceneRoot->update(deltaTime);
+    component::RigidBody::simulateAll(deltaTime);
 }
 
 void Application::render() const
@@ -286,7 +294,8 @@ void Application::restart()
                                                        .width = SHIP_OUTLINE_WIDTH,
                                                    }));
     playerShipNode->addComponent<component::Mesh>(draw::polygon(SHIP_VERTICES));
-    playerShipNode->addComponent<component::RigidBody>();
+    playerShipNode->addComponent<component::RigidBody>(
+        component::ConvexPolygon(SHIP_VERTICES.begin(), SHIP_VERTICES.end()), false, 2.0f, 0.05f);
     playerShipNode->addComponent<component::PlayerShipControls>();
     playerShipNode->addComponent<component::Trail>(trailRenderer, FOAM_COLOR, 0.2f * glm::length(SHIP_SCALE));
 
@@ -343,7 +352,8 @@ void Application::restart()
                                                           .width = SHIP_OUTLINE_WIDTH,
                                                       }));
         enemyShipNode->addComponent<component::Mesh>(draw::polygon(SHIP_VERTICES));
-        enemyShipNode->addComponent<component::RigidBody>();
+        enemyShipNode->addComponent<component::RigidBody>(
+            component::ConvexPolygon(SHIP_VERTICES.begin(), SHIP_VERTICES.end()), false, 2.0f, 0.05f);
         enemyShipNode->addComponent<component::AIShipControls>();
         enemyShipNode->addComponent<component::Trail>(trailRenderer, FOAM_COLOR, 0.2f * glm::length(SHIP_SCALE));
 
@@ -393,13 +403,24 @@ void Application::restart()
 
     world->initialize();
 
+    {
+        const auto [framebufferWidth, framebufferHeight] = window->getFramebufferSize();
+        onResize(framebufferWidth, framebufferHeight);
+    }
+
     gameStart = now();
 }
 
 void Application::onResize(uint32_t width, uint32_t height)
 {
-    Singleton::camera.lock()->onViewportResize(width, height);
-    Singleton::camera.lock()->lrbt = component::Camera::getWorldLBRT(width, height);
+    if (auto camera = Singleton::camera.lock())
+    {
+        camera->onViewportResize(width, height);
+        camera->lrbt = component::Camera::getWorldLBRT(width, height);
+    }
 
-    Singleton::uiCamera.lock()->onViewportResize(width, height);
+    if (auto uiCamera = Singleton::uiCamera.lock())
+    {
+        uiCamera->onViewportResize(width, height);
+    }
 }

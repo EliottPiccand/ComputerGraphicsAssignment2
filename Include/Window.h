@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <functional>
 #include <memory>
+#include <utility>
 #include <string>
 
 #include <GL/glew.h>
@@ -45,6 +46,8 @@ class Window
 
     void setTitle(std::string title) const;
     void toggleFullscreen();
+
+    [[nodiscard]] std::pair<uint32_t, uint32_t> getFramebufferSize() const;
 
     void close();
 };

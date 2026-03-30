@@ -61,6 +61,14 @@ void Window::setTitle(std::string title) const
     glfwSetWindowTitle(handle, title.c_str());
 }
 
+std::pair<uint32_t, uint32_t> Window::getFramebufferSize() const
+{
+    int width = 0;
+    int height = 0;
+    glfwGetFramebufferSize(handle, &width, &height);
+    return {static_cast<uint32_t>(width), static_cast<uint32_t>(height)};
+}
+
 void Window::toggleFullscreen()
 {
     isFullScreen = !isFullScreen;
