@@ -22,6 +22,7 @@
 #include "Components/UI/Button.h"
 #include "Components/UI/Component.h"
 #include "Components/Water.h"
+#include "Events/CannonballHit.h"
 #include "Events/EventQueue.h"
 #include "Events/Explosion.h"
 #include "Events/Fire.h"
@@ -40,9 +41,11 @@
 #include "Utils/Random.h"
 #include "Window.h"
 
-constexpr const Duration MAX_GAME_TIME = std::chrono::seconds(15);
-
 constexpr const glm::vec2 SHIP_SCALE = {50.0f, 50.0f};
+constexpr const int SHIP_START_HP = 24000;
+constexpr const int CANNONBALL_MIN_DAMAGE = 3000;
+constexpr const int CANNONBALL_MAX_DAMAGE = 15000;
+constexpr const float CANNONBALL_COLLISION_EXPLOSION_RADIUS = 50.0f;
 constexpr const std::array SPAWN_LOCATIONS = {
     glm::vec2{0.2f, 0.2f} * glm::vec2{WORLD_WIDTH, WORLD_HEIGHT},
     glm::vec2{0.8f, 0.2f} * glm::vec2{WORLD_WIDTH, WORLD_HEIGHT},
@@ -155,6 +158,59 @@ void Application::update(float deltaTime)
 
     for (const auto &rawEvent : EventQueue::popAll())
     {
+        if (const auto event = dynamic_cast<event::CannonballHit *>(rawEvent.get()))
+        {
+            if (const auto cannonballOption = sceneRoot->getGameObject(event->cannonballId); cannonballOption.has_value())
+            {
+                cannonballOption.value()->detach();
+            }
+            EventQueue::post<event::Explosion>(event->position, CANNONBALL_COLLISION_EXPLOSION_RADIUS);
+
+            const auto hpIt = shipHitPoints.find(event->shipId);
+            if (hpIt != shipHitPoints.end() && hpIt->second > 0)
+            {
+                const int damage = Random::randint(CANNONBALL_MIN_DAMAGE, CANNONBALL_MAX_DAMAGE);
+                hpIt->second = std::max(0, hpIt->second - damage);
+
+                if (hpIt->second == 0)
+                {
+                    const auto player = playerShip.lock();
+                    const bool destroyedPlayerShip = player && event->shipId == player->getId();
+
+                    if (const auto shipOption = sceneRoot->getGameObject(event->shipId); shipOption.has_value())
+                    {
+                        // Remove the whole node so its rigid body no longer participates in physics.
+                        shipOption.value()->detach();
+                    }
+
+                    if (destroyedPlayerShip)
+                    {
+                        EventQueue::post<event::GameEnd>(false);
+                    }
+                    else
+                    {
+                        bool allEnemiesDestroyed = true;
+                        for (const GameObjectId enemyId : enemyShipIds)
+                        {
+                            const auto enemyHpIt = shipHitPoints.find(enemyId);
+                            if (enemyHpIt == shipHitPoints.end() || enemyHpIt->second > 0)
+                            {
+                                allEnemiesDestroyed = false;
+                                break;
+                            }
+                        }
+
+                        if (allEnemiesDestroyed)
+                        {
+                            EventQueue::post<event::GameEnd>(true);
+                        }
+                    }
+                }
+            }
+
+            continue;
+        }
+
         if (const auto event = dynamic_cast<event::Fire *>(rawEvent.get()))
         {
             auto world = this->world.lock();
@@ -209,6 +265,12 @@ void Application::update(float deltaTime)
 
         if (const auto event = dynamic_cast<event::GameEnd *>(rawEvent.get()))
         {
+            if (gameEnded)
+            {
+                continue;
+            }
+            gameEnded = true;
+
             auto victoryMenu = this->victoryMenu.lock();
             victoryMenu->visible = true;
             victoryMenu->active = true;
@@ -216,7 +278,10 @@ void Application::update(float deltaTime)
 
             for (auto &ship : ships)
             {
-                ship.lock()->active = false;
+                if (const auto s = ship.lock())
+                {
+                    s->active = false;
+                }
             }
         }
     }
@@ -226,11 +291,6 @@ void Application::update(float deltaTime)
     if (Input::getState(Input::Action::ToggleFullScreen) == Input::State::JustReleased)
     {
         window->toggleFullscreen();
-    }
-
-    if (now() - gameStart > MAX_GAME_TIME)
-    {
-        EventQueue::post<event::GameEnd>(true);
     }
 
     component::ui::Component::resetUIStates();
@@ -250,6 +310,8 @@ void Application::render() const
 
 void Application::restart()
 {
+    gameEnded = false;
+
     auto victoryMenu = this->victoryMenu.lock();
 
     if (victoryMenu.get() != nullptr)
@@ -266,6 +328,9 @@ void Application::restart()
     }
 
     ships.clear();
+    shipHitPoints.clear();
+    enemyShipIds.clear();
+    playerShip = std::weak_ptr<GameObject>();
 
     auto spawnLocations = SPAWN_LOCATIONS | std::ranges::to<std::vector>();
 
@@ -300,6 +365,8 @@ void Application::restart()
     playerShipNode->addComponent<component::Trail>(trailRenderer, FOAM_COLOR, 0.2f * glm::length(SHIP_SCALE));
 
     ships.push_back(playerShipNode);
+    playerShip = playerShipNode;
+    shipHitPoints[playerShipNode->getId()] = SHIP_START_HP;
 
 #pragma region player_children
 
@@ -358,6 +425,8 @@ void Application::restart()
         enemyShipNode->addComponent<component::Trail>(trailRenderer, FOAM_COLOR, 0.2f * glm::length(SHIP_SCALE));
 
         ships.push_back(enemyShipNode);
+        shipHitPoints[enemyShipNode->getId()] = SHIP_START_HP;
+        enemyShipIds.insert(enemyShipNode->getId());
 
 #pragma region enemy_children
 

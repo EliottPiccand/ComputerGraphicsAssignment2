@@ -2,6 +2,8 @@
 
 #include <cstdint>
 #include <memory>
+#include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 #include "Clock.h"
@@ -23,6 +25,11 @@ class Application
     std::weak_ptr<GameObject> victoryMenu;
     std::weak_ptr<component::ui::Label> victoryMenuTitleLabel;
     std::vector<std::weak_ptr<GameObject>> ships;
+    std::weak_ptr<GameObject> playerShip;
+
+    std::unordered_map<GameObjectId, int> shipHitPoints;
+    std::unordered_set<GameObjectId> enemyShipIds;
+    bool gameEnded = false;
 
     Instant gameStart;
 

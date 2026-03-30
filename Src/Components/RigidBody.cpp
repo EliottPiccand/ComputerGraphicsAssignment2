@@ -1,6 +1,7 @@
 #include "Components/RigidBody.h"
 
 #include "Components/Cannonball.h"
+#include "Events/CannonballHit.h"
 #include "Events/EventQueue.h"
 #include "Events/Explosion.h"
 #include "Events/RemoveGameObject.h"
@@ -325,7 +326,15 @@ void RigidBody::simulateAll(float deltaTime)
 
     std::vector<std::shared_ptr<RigidBody>> liveBodies;
     liveBodies.reserve(bodies.size());
+
+    struct CannonballHitInfo
+    {
+        GameObjectId shipId;
+        glm::vec2 position;
+    };
+
     std::unordered_map<GameObjectId, glm::vec2> cannonballsToExplode;
+    std::unordered_map<GameObjectId, CannonballHitInfo> cannonballHits;
 
     for (auto it = bodies.begin(); it != bodies.end();)
     {
@@ -423,11 +432,21 @@ void RigidBody::simulateAll(float deltaTime)
                 if (aIsCannonball)
                 {
                     cannonballsToExplode.try_emplace(ownerA->getId(), centerA);
+
+                    if (!bIsCannonball && ownerB)
+                    {
+                        cannonballHits.try_emplace(ownerA->getId(), CannonballHitInfo{ownerB->getId(), centerA});
+                    }
                 }
 
                 if (bIsCannonball)
                 {
                     cannonballsToExplode.try_emplace(ownerB->getId(), centerB);
+
+                    if (!aIsCannonball && ownerA)
+                    {
+                        cannonballHits.try_emplace(ownerB->getId(), CannonballHitInfo{ownerA->getId(), centerB});
+                    }
                 }
 
                 // Cannonballs are kinematic (driven by Cannonball::update). They still trigger
@@ -537,8 +556,18 @@ void RigidBody::simulateAll(float deltaTime)
         body->previousState.angular_velocity = body->angularVelocity;
     }
 
+    for (const auto &[cannonballId, hitInfo] : cannonballHits)
+    {
+        EventQueue::post<event::CannonballHit>(cannonballId, hitInfo.shipId, hitInfo.position);
+    }
+
     for (const auto &[cannonballId, collisionPosition] : cannonballsToExplode)
     {
+        if (cannonballHits.contains(cannonballId))
+        {
+            continue;
+        }
+
         EventQueue::post<event::RemoveGameObject>(cannonballId);
         EventQueue::post<event::Explosion>(collisionPosition, MISSILE_COLLISION_EXPLOSION_RADIUS);
     }
