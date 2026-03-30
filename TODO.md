@@ -1,10 +1,6 @@
 # TODO
 
 ## Required
-- collisions
-- replace obstacles
-- cannonballs smoke trail
-- cannonballs target line
 - dammage mechanic
 
 ## Teacher Addons
@@ -13,6 +9,7 @@
 - propeller
 
 ## Custom Addons
+- replace obstacles
 - find some custom addons
     - powerups that allow the player to see cannonballs' target ?
     - fireworks on win ?

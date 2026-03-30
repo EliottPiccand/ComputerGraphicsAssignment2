@@ -22,7 +22,7 @@ void PlayerTurretControls::initialize()
 {
     Input::bindMouseButton(Input::Action::Fire, GLFW_MOUSE_BUTTON_LEFT);
     Input::bindMouseButton(Input::Action::CancelFire, GLFW_MOUSE_BUTTON_RIGHT);
-    
+
     const auto transformOption = owner.lock()->findFirstComponentInParents<Transform>();
     assert(transformOption.has_value() && "No transform found! component::PlayerTurretControls needs its node or one "
                                           "of its parents has a component::Transform");

@@ -3,8 +3,8 @@
 #include <cstdint>
 #include <functional>
 #include <memory>
-#include <utility>
 #include <string>
+#include <utility>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
