@@ -4,7 +4,6 @@
 EVERYTHING DONE
 
 ## Teacher Addons
-- turret recoil
 - propeller
 
 ## Custom Addons
