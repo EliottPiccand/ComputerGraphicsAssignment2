@@ -216,7 +216,10 @@ void Application::update(float deltaTime)
             auto world = this->world.lock();
             auto cannonball = world->addChild();
             cannonball->addComponent<component::Transform>(event->start, 0.0f, 30.0f * glm::vec2{1.0f, 1.0f});
-            cannonball->addComponent<component::Theme>(CANNONBALL_FILL_COLOR, CANNONBALL_OUTLINE_COLOR);
+            cannonball->addComponent<component::Theme>(CANNONBALL_FILL_COLOR, std::nullopt, component::Theme::Outline{
+                .color = CANNONBALL_OUTLINE_COLOR,
+                .width = 3.0f,
+            });
             cannonball->addComponent<component::Mesh>(draw::polygon(CANNONBALL_VERTICES));
             cannonball->addComponent<component::RigidBody>(
                 component::ConvexPolygon(CANNONBALL_VERTICES.begin(), CANNONBALL_VERTICES.end()), false, 0.5f, 0.1f);
