@@ -1,6 +1,5 @@
 #include "Application.h"
 
-#include <chrono>
 #include <memory>
 #include <numbers>
 #include <ranges>
@@ -10,6 +9,7 @@
 #include "Components/Camera.h"
 #include "Components/Cannonball.h"
 #include "Components/Explosion.h"
+#include "Components/FlappingFlag.h"
 #include "Components/Mesh.h"
 #include "Components/PlayerShipControls.h"
 #include "Components/PlayerTurretControls.h"
@@ -463,6 +463,14 @@ void Application::restart()
 
 #pragma endregion player_radar
 
+#pragma region player_flag
+
+    auto playerFlagNode = playerShipNode->addChild();
+    playerFlagNode->addComponent<component::Transform>(glm::vec2{-0.5f, 0.8f}, 0.0f, glm::vec2{0.02f, 0.02f});
+    playerFlagNode->addComponent<component::FlappingFlag>();
+
+#pragma endregion player_flag
+
 #pragma endregion player_children
 
 #pragma endregion player
@@ -522,6 +530,14 @@ void Application::restart()
         enemyShipRadarNode->addComponent<component::Radar>();
 
 #pragma endregion enemy_radar
+
+#pragma region enemy_flag
+
+        auto enemyFlagNode = enemyShipNode->addChild();
+        enemyFlagNode->addComponent<component::Transform>(glm::vec2{-0.5f, 0.8f}, 0.0f, glm::vec2{0.02f, 0.02f});
+        enemyFlagNode->addComponent<component::FlappingFlag>();
+
+#pragma endregion enemy_flag
 
 #pragma endregion enemy_children
 

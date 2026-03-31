@@ -20,6 +20,3 @@
 
 ## If time
 - add loss water volume through waves
-
-# IDK
-- can enemies take < 15° steps ?

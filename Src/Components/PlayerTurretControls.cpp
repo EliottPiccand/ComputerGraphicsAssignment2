@@ -10,7 +10,6 @@
 #include "Models.h"
 #include "Singleton.h"
 #include "Utils/Color.h"
-#include "Utils/Constants.h"
 #include "Utils/Profiling.h"
 
 constexpr const GLfloat AIM_RAY_WIDTH = 3.0f;

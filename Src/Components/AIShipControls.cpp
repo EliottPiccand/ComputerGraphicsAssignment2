@@ -1,5 +1,6 @@
 #include "Components/AIShipControls.h"
 
+#include <algorithm>
 #include <cassert>
 #include <chrono>
 
@@ -95,10 +96,10 @@ void AIShipControls::update(float deltaTime)
     const glm::vec2 targetDirection = glm::normalize(target - position);
     const float angleToTarget = glm::orientedAngle(direction, targetDirection);
 
-    if (std::abs(angleToTarget) > SHIP_ROTATION_ANGLE / 2.0f && now() - lastTurn > TURN_MIN_INTERVAL)
+    if (now() - lastTurn > TURN_MIN_INTERVAL)
     {
         lastTurn = now();
-        transform->rotate(SHIP_ROTATION_ANGLE * glm::sign(angleToTarget));
+        transform->rotate(std::clamp(angleToTarget, -SHIP_ROTATION_ANGLE, SHIP_ROTATION_ANGLE));
     }
 
     // Move
