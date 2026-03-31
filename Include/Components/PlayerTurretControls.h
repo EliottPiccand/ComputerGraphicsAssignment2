@@ -18,6 +18,7 @@ class PlayerTurretControls : public Component
     std::optional<glm::vec2> lastKnownAimTarget;
     std::optional<glm::vec2> previewTarget;
     bool aimingValidPosition;
+    float recoil = 0.0f;
 
   public:
     void initialize() override;

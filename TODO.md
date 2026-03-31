@@ -1,10 +1,9 @@
 # TODO
 
 ## Required
-- dammage mechanic
+EVERYTHING DONE
 
 ## Teacher Addons
-- flag
 - turret recoil
 - propeller
 

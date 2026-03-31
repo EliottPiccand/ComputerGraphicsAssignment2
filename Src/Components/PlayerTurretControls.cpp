@@ -3,6 +3,8 @@
 #include <cmath>
 #include <numbers>
 
+#include <glm/gtx/rotate_vector.hpp>
+
 #include "Events/EventQueue.h"
 #include "Events/Fire.h"
 #include "GameObject.h"
@@ -10,6 +12,7 @@
 #include "Models.h"
 #include "Singleton.h"
 #include "Utils/Color.h"
+#include "Utils/Constants.h"
 #include "Utils/Profiling.h"
 
 constexpr const GLfloat AIM_RAY_WIDTH = 3.0f;
@@ -33,7 +36,14 @@ void PlayerTurretControls::update(float deltaTime)
     ProfileScope;
     auto transform = this->transform.lock();
 
-    (void)deltaTime;
+    if (recoil > deltaTime * RECOIL_DECAY_INTENSITY)
+    {
+        recoil -= deltaTime * RECOIL_DECAY_INTENSITY;
+    }
+    else
+    {
+        recoil = 0.0f;
+    }
 
     const glm::mat3 resolvedTransform = transform->resolve();
     const glm::vec2 position = glm::vec2(resolvedTransform[2]);
@@ -79,9 +89,13 @@ void PlayerTurretControls::update(float deltaTime)
             const auto shipOwner = turretOwner->getParent();
             const auto shooterId = shipOwner.has_value() ? shipOwner.value()->getId() : turretOwner->getId();
             EventQueue::post<event::Fire>(position, previewTarget.value(), shooterId);
+            recoil = RECOIL_AMPLITUDE;
         }
         previewTarget = std::nullopt;
     }
+
+    
+    transform->setPosition(glm::rotate(glm::vec2{0.0f, recoil}, transform->getRotation()));
 }
 
 bool PlayerTurretControls::render() const
@@ -91,7 +105,8 @@ bool PlayerTurretControls::render() const
     if (previewTarget.has_value())
     {
         const glm::mat3 resolvedTransform = transform.lock()->resolve();
-        const glm::vec2 relativeTargetPosition = glm::inverse(resolvedTransform) * glm::vec3(previewTarget.value(), 1.0f);
+        const glm::vec2 relativeTargetPosition =
+            glm::inverse(resolvedTransform) * glm::vec3(previewTarget.value(), 1.0f);
 
         draw::dashedArrow({0.0f, 0.0f}, relativeTargetPosition, AIM_RAY_COLOR, AIM_RAY_WIDTH, AIM_RAY_ARROW_TIP_SIZE);
     }

@@ -29,6 +29,11 @@ void Transform::setScale(float scale)
     this->scale = glm::vec2{scale, scale};
 }
 
+void Transform::setPosition(const glm::vec2 &position)
+{
+    this->position = position;
+}
+
 void Transform::rotate(float by)
 {
     constexpr const float PI_2 = 2.0f * std::numbers::pi_v<float>;
