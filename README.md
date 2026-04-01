@@ -22,6 +22,23 @@ cmake --build Build/Debug
 cmake --build Build/Profiling
 ```
 
+### With VisualStudio
++ Create an empty solution
++ Recreate the project structure with filters (Src/ goes into ... and Include/ into ...)
++ Add every .cpp and .h to their proper filter
++ Open the project properties (right click on the project then properties)
+    + Change `Configuration Properties > General > Platform Toolset` to `LLVM (clang-cl)` (you might have to install it from VS Installer)  
+    + Change `Configuration Properties > General > C++ Language Standard` to `c++23`
+    + Add to `Configuration Properties > C/C++ > General > Additional Include Directories` :
+        - `path/to/repo/Include`
+        - `path/to/repo/Lib` 
+    + Add to `Configuration Properties > C/C++ > Preprocessor > Preprocessor Definitions` : `OE_RELEASE;GLM_ENABLE_EXPERIMENTAL`
+    + Change `Configuration Properties > C/C++ > Output Files > Object File Names` to `$(IntDir)%(RelativeDir)%(Filename).obj`
+    + Add to `Configuration Properties > C/C++ > Command Line > Additional Options` : `-Xclang -std=c++23`
+    + Add to `Configuration Properties > Linker > General > Additional Library Directories` : `path/to/repo/Lib`
+    + Add to `Configuration Properties > Linker > Input > Additional Dependencies` : `glew32.lib; glfw3.lib; opengl32.lib; user32.lib; gdi32.lib; shell32.lib; glu32.lib`
++ Switch the Solution Configuration to `Release`
+
 ### Using the Profiling Profile
 [Tracy](https://github.com/wolfpld/tracy) must be added as a Git submodule (see `.gitmodules`) to be able to compile with the Profiling profile. Note that to use Tracy, the submodule should be checkout to the last stable version like
 ```cmd

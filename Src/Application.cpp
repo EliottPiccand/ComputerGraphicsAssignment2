@@ -53,7 +53,7 @@ constexpr const std::array SPAWN_LOCATIONS = {
     glm::vec2{0.2f, 0.8f} * glm::vec2{WORLD_WIDTH, WORLD_HEIGHT},
     glm::vec2{0.8f, 0.8f} * glm::vec2{WORLD_WIDTH, WORLD_HEIGHT},
 };
-constexpr const size_t ENEMY_COUNT = 2;
+constexpr const size_t ENEMY_COUNT = 3;
 
 static_assert(SPAWN_LOCATIONS.size() > ENEMY_COUNT, "Not enough spawn location to spawn the players and all enemies");
 
@@ -485,9 +485,11 @@ void Application::restart()
 
 #pragma region enemy
 
+        auto spawnLocation = Random::pop(spawnLocations);
+
         auto enemyShipNode = world->addChild();
         enemyShipNode->addComponent<component::Transform>(
-            Random::pop(spawnLocations), Random::random(0.0f, 2.0f * std::numbers::pi_v<float>), SHIP_SCALE);
+            spawnLocation, Random::random(0.0f, 2.0f * std::numbers::pi_v<float>), SHIP_SCALE);
         enemyShipNode->addComponent<component::Theme>(ENEMY_SHIP_FILL_COLOR, std::nullopt,
                                                       std::optional(component::Theme::Outline{
                                                           .color = ENEMY_SHIP_OUTLINE_COLOR,
