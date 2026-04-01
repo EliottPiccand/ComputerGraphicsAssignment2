@@ -27,7 +27,7 @@ cmake --build Build/Profiling
 + Recreate the project structure with filters (Src/ goes into ... and Include/ into ...)
 + Add every .cpp and .h to their proper filter
 + Open the project properties (right click on the project then properties)
-    + Change `Configuration Properties > General > Platform Toolset` to `LLVM (clang-cl)` (you might have to install it from VS Installer)  
+    + Change `Configuration Properties > General > Platform Toolset` to `LLVM (clang-cl)` (you might have to install it from VS Installer : `C++ Clang Compiler for Windows` + `MSBuild support for LLVM (clang-cl) toolset`)  
     + Change `Configuration Properties > General > C++ Language Standard` to `c++23`
     + Add to `Configuration Properties > C/C++ > General > Additional Include Directories` :
         - `path/to/repo/Include`
