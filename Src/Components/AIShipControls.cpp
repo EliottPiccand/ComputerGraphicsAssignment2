@@ -67,7 +67,7 @@ void AIShipControls::pickTarget()
     {
         target = Random::range<glm::vec2>(PATH_POINTS);
         distance = glm::length(target - position);
-    } while (MIN_NEXT_TARGET_RADIUS <= distance && distance <= MAX_NEXT_TARGET_RADIUS);
+    } while (distance < MIN_NEXT_TARGET_RADIUS || distance > MAX_NEXT_TARGET_RADIUS);
 }
 
 void AIShipControls::initialize()
@@ -93,7 +93,13 @@ void AIShipControls::update(float deltaTime)
         pickTarget();
     }
 
-    const glm::vec2 targetDirection = glm::normalize(target - position);
+    const glm::vec2 toTarget = target - position;
+    if (glm::length2(toTarget) <= 1e-6f)
+    {
+        return;
+    }
+
+    const glm::vec2 targetDirection = glm::normalize(toTarget);
     const float angleToTarget = glm::orientedAngle(direction, targetDirection);
 
     if (now() - lastTurn > TURN_MIN_INTERVAL)
