@@ -1,6 +1,5 @@
 #include "Components/AITurretControls.h"
 
-#include <chrono>
 #include <cmath>
 #include <numbers>
 
@@ -19,12 +18,13 @@
 constexpr const float TARGET_SPEED = 300.0f; // m/s
 constexpr const float MIN_TARGET_NEXT_PATH_POINT_RADIUS = 200.0f;
 constexpr const float TARGET_REACH_PATH_POINT_ERROR_MARGIN = 10.0f;
-constexpr const Duration FIRE_TRY_INTERVAL = std::chrono::milliseconds(100);
-constexpr const float FIRE_PROBABILITY_PER_TRY = 0.01f;
+constexpr const float FIRE_PROBABILITY_PER_FRAME_AT_60FPS = 0.01f;
+const float FIRE_RATE_PER_SECOND =
+    -60.0f * std::log(1.0f - FIRE_PROBABILITY_PER_FRAME_AT_60FPS);
 
 using namespace component;
 
-AITurretControls::AITurretControls() : lastFireTry(now())
+AITurretControls::AITurretControls()
 {
     target = {-MIN_TARGET_NEXT_PATH_POINT_RADIUS, -MIN_TARGET_NEXT_PATH_POINT_RADIUS};
     pickTargetNextPathPoint();
@@ -73,18 +73,15 @@ void AITurretControls::update(float deltaTime)
         pickTargetNextPathPoint();
     }
 
-    // Fire
-    if (now() - lastFireTry < FIRE_TRY_INTERVAL)
+    // Fire with a frame-rate-independent probability.
+    const float safeDeltaTime = deltaTime > 0.0f ? deltaTime : 0.0f;
+    const float fireProbabilityThisFrame = 1.0f - std::exp(-FIRE_RATE_PER_SECOND * safeDeltaTime);
+    if (Random::random(0.0f, 1.0f) < fireProbabilityThisFrame)
     {
-        lastFireTry = now();
-
-        if (Random::random(0.0f, 1.0f) < FIRE_PROBABILITY_PER_TRY)
-        {
-            const auto turretOwner = owner.lock();
-            const auto shipOwner = turretOwner->getParent();
-            const auto shooterId = shipOwner.has_value() ? shipOwner.value()->getId() : turretOwner->getId();
-            EventQueue::post<event::Fire>(position, target, shooterId);
-        }
+        const auto turretOwner = owner.lock();
+        const auto shipOwner = turretOwner->getParent();
+        const auto shooterId = shipOwner.has_value() ? shipOwner.value()->getId() : turretOwner->getId();
+        EventQueue::post<event::Fire>(position, target, shooterId);
     }
 }
 

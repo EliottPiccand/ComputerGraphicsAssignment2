@@ -19,7 +19,6 @@ class AITurretControls : public Component
     std::weak_ptr<Transform> transform;
     glm::vec2 target;
     glm::vec2 targetNextPathPoint;
-    Instant lastFireTry;
 
     void pickTargetNextPathPoint();
 
