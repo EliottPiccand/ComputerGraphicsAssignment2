@@ -170,8 +170,20 @@ The game spawn 3 enemies at each game start. Those enemies have a basic AI : eac
 To make the turret shoot cannonballs, we used the same behavior : the turret has a target that move exactly like the boat, but is invisible. Randomly, the turret shoot cannonballs at this target.
 
 == Collisions
+Collisions are handled by the physics system (`RigidBody::simulateAll`) once per frame, after all the positions have been updated. For each pair of rigid bodies, we test overlap using SAT (Separating Axis Theorem) on their convex polygons.  
 
-#text(red)[Je te laisse faire cette partie]
+When two ships overlap, we apply:
+- a positional correction to separate them (to avoid interpenetration),
+- then an impulse-based response (linear and angular), using mass, inertia, and restitution.
+
+The solver runs several iterations each frame to improve stability.
+
+Cannonballs are treated differently: they are kinematic (their motion is driven by their own update), so they do not receive impulse-based resolution.  
+However, collisions involving cannonballs are still detected:
+- cannonball vs ship posts a hit event, then damage is handled by the game logic,
+- cannonball vs world/other object posts removal + explosion events,
+- cannonball collisions with the shooter are ignored.
+Finally, rigid bodies are clamped inside world bounds.
 
 == Cannonballs
 
@@ -241,8 +253,11 @@ On triggering the `TargetReachedEvent`, the camera start shaking. This is done b
 ) <alg:camera-shake>
 
 == Damage System
+As required by the assignment, we implemented a damage system. Each ship has a HP value, and when it reaches $0$, the ship is sunk and deleted from the scene. To implement that, we used the event system.
 
-#text(red)[Je te laisse faire cette partie]
+When a `TargetReachedEvent` is triggered, the program check if the explosion is close enough to any ship (except the shooter) to damage it. If it is the case, a `DamageEvent` is sent, with the ship entity as target and the damage amount as data. When a ship receive a `DamageEvent`, its HP is decreased by the damage amount, and if it reaches $0$, a `SinkEvent` is sent, deleting the ship entity.
+
+To display the HP of the ships, we render a HP bar above each ship (see @fig:game). The bar is green for the player and red for the enemies, and its length is proportional to the current HP of the ship.
 
 == Ship Trail
 To display the ship foam trail (see @fig:game), we decided to store the ship position at regular interval#footnote[We implemented that using a cyclic queue data structure - since there is only a limited amount of position needed each frame - to avoid allocating memory each frame.], and to display a point (`GL_POINTS` primitive) on each of those positions, with a different size and opacity depending on how long the position has been stored.
