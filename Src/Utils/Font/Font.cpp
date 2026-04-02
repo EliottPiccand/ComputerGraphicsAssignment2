@@ -2,6 +2,7 @@
 
 #include "Utils/Font/FontAtlas.h"
 #include <algorithm>
+#include <array>
 #include <cassert>
 #include <print>
 
@@ -23,7 +24,8 @@ std::tuple<GLuint, glm::vec2> Font::renderTextToTexture(const std::string &text)
         GLuint emptyTexture;
         glGenTextures(1, &emptyTexture);
         glBindTexture(GL_TEXTURE_2D, emptyTexture);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, 1, 1, 0, GL_RED, GL_UNSIGNED_BYTE, nullptr);
+        const std::array<uint8_t, 4> transparentPixel = {0, 0, 0, 0};
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, transparentPixel.data());
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -80,8 +82,10 @@ std::tuple<GLuint, glm::vec2> Font::renderTextToTexture(const std::string &text)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+    std::vector<uint8_t> texturePixels(static_cast<size_t>(textureSize.x) * static_cast<size_t>(textureSize.y) * 4,
+                                       static_cast<uint8_t>(0));
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, static_cast<GLsizei>(textureSize.x), static_cast<GLsizei>(textureSize.y), 0,
-                 GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+                 GL_RGBA, GL_UNSIGNED_BYTE, texturePixels.data());
 
     GLint cursorX = 0;
 
